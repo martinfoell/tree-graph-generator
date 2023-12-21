@@ -1,7 +1,8 @@
 // A simple representation of graph using Adjacent list
-#include<iostream> 
-#include<vector>
-#include<map>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <map>
 #include <algorithm>
 using namespace std; 
   
@@ -131,17 +132,17 @@ void PrintDegree_n(vector<int> adj[], int v,int n){
 }
 
 std::vector<int> shortest_path(vector<int> adj[], int v, int u){
-	std::vector<int> path;
-	path.push_back(u);
-	while(path.back() != v){
-		for(int i = 0; i < adj[path.back()].size(); i++){
-			if(adj[path.back()][i] < path.back()){
-				path.push_back(adj[path.back()][i]);
-				break;
-			}
-		}
-	}
-	return path;
+  std::vector<int> path;
+  path.push_back(u);
+  while(path.back() != v){
+    for(int i = 0; i < adj[path.back()].size(); i++){
+      if(adj[path.back()][i] < path.back()){
+	path.push_back(adj[path.back()][i]);
+	break;
+      }
+    }
+  }
+  return path;
 }
 
 
@@ -160,9 +161,36 @@ void printGraph(vector<int> adj[], int V)
     } 
 } 
 
+void tikzset(){
+  std::ofstream tikzset("tex/tikzset.tex");
+  if (tikzset.is_open()) {
+    tikzset << "\\tikzset{\n";
+    tikzset << "    every node/.style={\n";
+    tikzset << "        circle,\n";
+    tikzset << "        draw,\n";
+    tikzset << "        solid,\n";
+    tikzset << "        fill=black,\n";
+    tikzset << "        inner sep=0pt,\n";
+    tikzset << "        minimum width=4pt\n";
+    tikzset << "    }\n";
+    tikzset << "}\n";
+    tikzset.close();
+  }
+}
+
+void tikzloop(){
+  std::ofstream tikzloop("tex/tikzloop.tikz");
+  tikzloop << "\\foreach \\curr in \\numbers{\n";
+  tikzloop << "  \\coordinate (\\curr) at ($ (\\prev) + (\\angle:1) $);\n";
+  tikzloop << "  \\draw (\\prev) node {} -- (\\curr) node {};\n";
+  tikzloop << "  \\xdef\\prev{\\curr} % Update the previous element to the current element\n";
+  tikzloop << "}\n";
+}
 // Driver code 
 int main() 
 { 
+    tikzset();
+    tikzloop();
     int V = 13; 
     vector<int> adj[V]; 
     // initalizeTree_simple(adj,1);
