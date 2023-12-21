@@ -1,0 +1,101 @@
+#ifndef tree_hpp
+#define tree_hpp
+
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
+#include <cmath>
+#include <iomanip>
+#include <climits>
+#include <numeric>
+#include <functional>
+#include <cassert>
+#include <cctype>
+#include <bitset>
+#include <list>
+#include <deque>
+#include <utility>
+#include <random>
+#include <chrono>
+#include <ctime>
+
+
+
+// class Tree {
+//   public:
+//   int V_;
+//   std::vector<int> adj_[]; 
+  
+  
+//   // constructor
+//   Tree(int n);
+
+//   void add_node();
+
+//   void add_branch();
+  
+// };
+
+class Graph {
+private:
+    int V; // Number of vertices
+    std::vector<std::vector<int>> adjList; // Adjacency list
+
+public:
+    // Constructor to initialize the graph with V vertices
+    Graph(int vertices);
+
+    // Function to add an edge between vertex u and vertex v
+    void addEdge(int u, int v);
+
+    // Function to display the adjacency list representation of the graph
+    void printGraph();
+};
+
+// class Graph {
+//   int V;
+//   std::vector<int>* adjLists;
+//   bool* visited;
+
+//   public:
+//   Graph(int V);
+//   void addEdge(int u, int v);
+//   void BFS(int startVertex);
+//   void printGraph(); 
+// };
+
+// // Add edges to the graph
+// void Graph::addEdge(int src, int dest) {
+//   adjLists[src].push_back(dest);
+//   adjLists[dest].push_back(src);
+// }
+// // Create a graph with given vertices,
+// // and maintain an adjacency list
+// Graph::Graph(int vertices) {
+//   numVertices = vertices;
+//   adjLists = new std::list<int>[vertices];
+// }
+// class Tree {
+// public:
+//   int V;  
+//   std::vector<int> adj[0];
+  
+//   // Constructor that initializes V and the vector
+//   Tree(int V);
+
+//   void addEdge(int u, int v);
+//   void printGraph();
+ 
+// };
+#endif  
+  

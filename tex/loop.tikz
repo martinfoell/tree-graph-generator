@@ -1,0 +1,5 @@
+\foreach \curr in \numbers{
+  \coordinate (\curr) at ($ (\prev) + (\angle:1) $);
+  \draw (\prev) node {} -- (\curr) node {};
+  \xdef\prev{\curr} % Update the previous element to the current element
+}

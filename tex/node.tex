@@ -1,30 +1,42 @@
-\documentclass{scrartcl}
+% \documentclass{standalone}
+\documentclass{article}
+
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
 \begin{document}
 
-
 \input{tikzset}
+
+\begin{minipage}{3cm}
+
+
+
+
+% \begin{tikzpicture}
+%   % \node (A) {A};
+%   \def\prev{0} % Variable to store the previous element
+%   \def\numbers{1,2,3,4,5}
+%   \def\angle{45}
+%   \coordinate (\prev) at (0,0);
+%   \input{tikzloop.tikz}
+
+%   \def\prev{0}
+%   \def\numbers{6,7,8}
+%   \def\angle{-45}
+%   \coordinate (\prev) at (0,0);
+%   \input{tikzloop.tikz}  
+  
+% \end{tikzpicture}
 
 
 \begin{tikzpicture}
-  % \node (A) {A};
-  \def\prev{0} % Variable to store the previous element
-  \def\numbers{1,2,3,4,5}
-  \def\angle{45}
-  \coordinate (\prev) at (0,0);
-  \input{tikzloop.tikz}
-
-  \def\prev{0}
-  \def\numbers{6,7,8}
-  \def\angle{-45}
-  \coordinate (\prev) at (0,0);
-  \input{tikzloop.tikz}  
-  
+  \input{core.tikz}
+  \input{loop.tikz}
 \end{tikzpicture}
 
 
+\end{minipage}
   
 
 \end{document}

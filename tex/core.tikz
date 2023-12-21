@@ -1,0 +1,4 @@
+\def\prev{0}
+\def\numbers{1,2,3}
+\def\angle{0}
+\coordinate (\prev) at (1,0);

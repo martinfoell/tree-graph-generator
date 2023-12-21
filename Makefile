@@ -7,8 +7,15 @@ partitions:
 	./bin/partitions
 
 main:
-	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp -o ./bin/main2
+	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp ./src/utils.cpp -o ./bin/main2
 	./bin/main2
+
+pdf-main:
+	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp ./src/utils.cpp -o ./bin/main2
+	./bin/main2
+	cd tex/ && \
+	pdflatex node.tex && \
+	evince node.pdf
 
 write:
 	g++ ./test/write_vector.cpp  -o ./bin/write

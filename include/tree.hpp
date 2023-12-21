@@ -65,7 +65,12 @@ public:
   // Function to add a path from a set of nodes into a set of partitions
   void addPaths(std::vector<int> nodes, std::vector<int> partion);
 
+  // Function to add the core path from vertex 0 to l-1
+  void corePath(int l);
+
+  // Clear the edges of the tree
   void clear();
+  
   //////// Print functions ////////
   
   // Function to display the adjacency list representation of the graph
