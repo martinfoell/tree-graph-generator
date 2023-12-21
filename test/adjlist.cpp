@@ -42,9 +42,15 @@ int firstEmpty(vector<int> adj[], int V){
 
 // adds a branch to a node u in a tree with length l starting from node v
 void addBranch(vector<int> adj[], int u, int v, int l){
-  //add brach from u to v
-  adj[u].push_back(v);
-  adj[v].push_back(u);
+  //add brach from u to v if they are not equal
+  if (u != v){
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+  }
+  else if (u == v){
+    // need to combensate since u and v are the same
+    l+=1;
+  }
   //add branch from v to v+l
   for (int i = 0; i < l-1; i++){
     adj[v+i].push_back(v + i + 1);
@@ -55,9 +61,9 @@ void addBranch(vector<int> adj[], int u, int v, int l){
 void addBranches(vector<int> adj[], int V, std::vector<int> nodes, std::vector<int> partion){
   // size of partition
   int n = partion.size();
-  // highest node that is empty
-  int count = firstEmpty(adj, V);
   for (int i = 0; i < n; i++){
+    // highest node that is empty
+    int count = firstEmpty(adj, V);
     // add branch to node
     addBranch(adj, nodes[i], count, partion[i]);
     count+=partion[i];
@@ -157,12 +163,15 @@ void printGraph(vector<int> adj[], int V)
 // Driver code 
 int main() 
 { 
-    int V = 7; 
+    int V = 13; 
     vector<int> adj[V]; 
-    initalizeTree_simple(adj,2);
+    // initalizeTree_simple(adj,1);
     std::cout<<firstEmpty(adj,V)<<std::endl;
-    // addBranch(adj, 0, 2, 2);
-    addBranches(adj,V, {0,0}, {2,2});
+    // addBranch(adj, 0, 1, 2);
+    addBranches(adj,V, {0,0,0}, {4,3,2});
+    // addBranches(adj,V, {0}, {4});
+    // addBranches(adj,V, {0}, {3});
+    // addBranches(adj,V, {0}, {2});        
     
     // addEdge(adj, 0, 2);
     // addEdge(adj, 0, 3);
