@@ -4,20 +4,25 @@
 
 
 int main() {
-    int V = 5; // Number of vertices in the graph
-    Tree graph(V); // Create a graph with 5 vertices
+    int V =13; // Number of vertices in the graph
+    Tree tree(V); // Create a tree with 5 vertices
 
     // Add edges
-    graph.addEdge(0, 1);
-    graph.addEdge(0, 4);
-    graph.addEdge(1, 2);
-    graph.addEdge(1, 3);
-    graph.addEdge(1, 4);
-    graph.addEdge(2, 3);
-    graph.addEdge(3, 4);
+    tree.addPaths({0,0,0}, {4,3,2});
+    // tree.addEdge(0, 1);
+    // tree.addPath(1, 2, 3);
+    // tree.addNodeInbetween(0, 1, 2);
+
+    // tree.addEdge(0, 4);
+    // tree.addEdge(1, 2);
+    // tree.addEdge(1, 3);
+    // tree.addEdge(1, 4);
+    // tree.addEdge(2, 3);
+    // tree.addEdge(3, 4);
 
     // Display the adjacency list
-    graph.printGraph();
+    tree.printGraph();
+    std::cout<<"Last vertex: "<<tree.emptyVertex()<<std::endl;    
 
     return 0;
 }

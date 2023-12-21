@@ -31,20 +31,6 @@
 
 
 
-// class Tree {
-//   public:
-//   int V_;
-//   std::vector<int> adj_[]; 
-  
-  
-//   // constructor
-//   Tree(int n);
-
-//   void add_node();
-
-//   void add_branch();
-  
-// };
 
 class Tree {
 private:
@@ -52,50 +38,27 @@ private:
     std::vector<std::vector<int>> adjList; // Adjacency list
 
 public:
-    // Constructor to initialize the graph with V vertices
-    Tree(int vertices);
+  // Constructor to initialize the graph with V vertices
+  Tree(int vertices);
 
-    // Function to add an edge between vertex u and vertex v
-    void addEdge(int u, int v);
+  // Function to find the first empty vertex in the adjacency list
+  int emptyVertex();
+  
+  // Function to add an edge between vertex u and vertex v
+  void addEdge(int u, int v);
 
-    // Function to display the adjacency list representation of the graph
-    void printGraph();
+  // Function to add a new vertex between vertex u and vertex v
+  void addNodeInbetween(int u, int v, int v_new);
+
+  // Function to add a path from a curent nude to the next and so on with length l
+  void addPath(int curr, int next, int l);
+
+  // Function to add a path from a set of nodes into a set of partitions
+  void addPaths(std::vector<int> nodes, std::vector<int> partion);
+  
+  // Function to display the adjacency list representation of the graph
+  void printGraph();
 };
 
-// class Graph {
-//   int V;
-//   std::vector<int>* adjLists;
-//   bool* visited;
-
-//   public:
-//   Graph(int V);
-//   void addEdge(int u, int v);
-//   void BFS(int startVertex);
-//   void printGraph(); 
-// };
-
-// // Add edges to the graph
-// void Graph::addEdge(int src, int dest) {
-//   adjLists[src].push_back(dest);
-//   adjLists[dest].push_back(src);
-// }
-// // Create a graph with given vertices,
-// // and maintain an adjacency list
-// Graph::Graph(int vertices) {
-//   numVertices = vertices;
-//   adjLists = new std::list<int>[vertices];
-// }
-// class Tree {
-// public:
-//   int V;  
-//   std::vector<int> adj[0];
-  
-//   // Constructor that initializes V and the vector
-//   Tree(int V);
-
-//   void addEdge(int u, int v);
-//   void printGraph();
- 
-// };
 #endif  
   
