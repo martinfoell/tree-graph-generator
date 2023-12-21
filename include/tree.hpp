@@ -65,6 +65,7 @@ public:
   // Function to add a path from a set of nodes into a set of partitions
   void addPaths(std::vector<int> nodes, std::vector<int> partion);
 
+  void clear();
   //////// Print functions ////////
   
   // Function to display the adjacency list representation of the graph

@@ -93,7 +93,11 @@ void Tree::addPaths(std::vector<int> nodes, std::vector<int> partion){
   }
 }
 
-
+void Tree::clear(){
+  for (int i = 0; i < V; i++){
+    adjList[i].clear();
+  }
+}
 //////// Print functions ////////
 
 
