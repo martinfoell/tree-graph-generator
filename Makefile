@@ -6,3 +6,7 @@ partitions:
 	g++ ./test/partitions.cpp -o ./bin/partitions  
 	./bin/partitions
 
+main:
+	g++ ./test/main.cpp ./src/tree.cpp -o ./bin/main2
+	./bin/main2
+

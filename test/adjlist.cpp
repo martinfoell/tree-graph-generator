@@ -192,7 +192,8 @@ int main()
     tikzset();
     tikzloop();
     int V = 13; 
-    vector<int> adj[V]; 
+    vector<int> adj[]; 
+    adj[V]; 
     // initalizeTree_simple(adj,1);
     std::cout<<firstEmpty(adj,V)<<std::endl;
     // addBranch(adj, 0, 1, 2);
