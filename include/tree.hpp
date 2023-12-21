@@ -41,6 +41,15 @@ public:
   // Constructor to initialize the graph with V vertices
   Tree(int vertices);
 
+  // Find the degree of a vertex
+  int degree(int v);
+  
+  // Make a map of all vertices with degree above n, and save the degree of each vertex
+  std::map<int,int> degree_n(int n);
+  
+  // Function to find all leaves in the tree
+  std::vector<int> leaves();
+  
   // Function to find the first empty vertex in the adjacency list
   int emptyVertex();
   
@@ -55,9 +64,21 @@ public:
 
   // Function to add a path from a set of nodes into a set of partitions
   void addPaths(std::vector<int> nodes, std::vector<int> partion);
+
+  //////// Print functions ////////
   
   // Function to display the adjacency list representation of the graph
   void printGraph();
+
+  // Print the degree of all vertices
+  void PrintDegree();
+
+  // Fucntion to print all leaves in the tree
+  void PrintLeaves();
+  
+  // Print the degree of all vertices with degree above n
+  void PrintDegree_n(int n);
+  
 };
 
 #endif  

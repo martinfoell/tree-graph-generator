@@ -7,6 +7,10 @@ partitions:
 	./bin/partitions
 
 main:
-	g++ ./test/main.cpp ./src/tree.cpp -o ./bin/main2
+	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp -o ./bin/main2
 	./bin/main2
+
+write:
+	g++ ./test/write_vector.cpp  -o ./bin/write
+	./bin/write
 

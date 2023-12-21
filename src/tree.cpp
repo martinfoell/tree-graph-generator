@@ -7,6 +7,31 @@ Tree::Tree(int vertices) {
     adjList.resize(V);
 }
 
+int Tree::degree(int v){
+  return adjList[v].size();
+}
+
+// map with key as vertex and value as degree above n
+std::map<int,int> Tree::degree_n(int n){
+  std::map<int,int> degree_map;
+  for(int i = 0; i < V; i++){
+    if(degree(i) > n){
+      degree_map[i] = degree(i);
+    }
+  }
+  return degree_map;
+}
+
+std::vector<int> Tree::leaves(){
+  std::vector<int> leaves_;
+  for(int i=0;i<V;i++){
+    if(adjList[i].size()==1){
+      leaves_.push_back(i);
+    }
+  }
+  return leaves_;
+}
+
 int Tree::emptyVertex(){
     // Find the first empty vector in adj
     int emptyVertex = -1;
@@ -68,6 +93,10 @@ void Tree::addPaths(std::vector<int> nodes, std::vector<int> partion){
   }
 }
 
+
+//////// Print functions ////////
+
+
 // Function to display the adjacency list representation of the graph
 void Tree::printGraph() {
     for (int i = 0; i < V; ++i) {
@@ -78,6 +107,31 @@ void Tree::printGraph() {
         }
         std::cout << std::endl;
     }
+}
+
+void Tree::PrintDegree(){
+  std::cout<<"Degree of each vertex: "<<std::endl;
+  for(int i=0;i<V;i++){
+    std::cout<<"Vertex "<<i<<" has degree "<<degree(i)<<std::endl;
+  }
+}
+
+// Printing map with key as vertex and value as degree above n
+void Tree::PrintDegree_n(int n){
+  std::map<int,int> degree_n_ = degree_n(n);
+  std::cout<<"Number of vertices with degree above "<< n << ": "<< degree_n_.size() <<std::endl;
+  for(auto it = degree_n_.begin(); it != degree_n_.end(); ++it){
+		std::cout<<"Vertex "<<it->first<<" has degree "<<it->second<<std::endl;
+	}
+}
+
+void Tree::PrintLeaves(){
+  std::vector<int> leaves_ = leaves();
+  std::cout<<"Number of leaves: "<<leaves_.size()<<std::endl;
+  for(int i=0;i<leaves_.size();i++){
+    std::cout<<"Vertex "<<leaves_[i]<<" is a leaf"<<std::endl;
+  }
+  std::cout<<std::endl;
 }
 
 
