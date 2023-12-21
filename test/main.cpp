@@ -15,7 +15,11 @@ int main() {
 
     tree = treeCore;
 
-    
+    std::vector<int> leaves = tree.leaves();
+    int nleaves = leaves.size();
+    std::cout << nleaves << std::endl;
+    std::cout << "leaves: ";
+    printVector(leaves);
     
 
  
