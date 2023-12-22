@@ -16,12 +16,30 @@ int main() {
     treeCore.corePath(c);
 
     tree = treeCore;
+    std::vector<int> leaves = tree.leaves();
+    std::vector<int> part = {1,1};
+    std::vector<std::vector<int>> par = {{1,2},{1,2}};
+    std::vector<std::pair<int, int> > vec1 = { {1, 0}, {2,0}, {3,1} };
 
-    std::vector<int> partition = {1,1,2,2};
-    std::vector<std::vector<int>> partition_perm = permutations(partition);
+    for (int i = 0; i < leaves.size(); i++) {
+      int leaf = leaves[i];
+      std::vector<int> vec = par[i];
+      tree.addPaths({leaf,leaf}, vec);
+    }
+    int nleaves = leaves.size();
+    std::cout << nleaves << std::endl;
+    std::cout << "leaves: ";
+    printVector(leaves);
     
-    std::vector<int> leaves = {2,2};
-    std::vector<int> leaves_split = cumulative(leaves);
+    std::vector<int> partition2 = {1,1,2,2};
+    
+    int paths = 6;
+    std::vector<std::vector<int>> paths_config = filterVectors(partition(paths, nleaves),1);
+    std::vector<int> leaves_dist = {2,2};
+    print2DVector(paths_config);
+    
+    std::vector<std::vector<int>> partition_perm = permutations(partition2);
+    std::vector<int> leaves_split = cumulative(leaves_dist);
 
     printVector(leaves_split);
     for (int i = 0; i < partition_perm.size(); i++ ){
@@ -44,19 +62,6 @@ int main() {
     sortVec3(leafPaths);
     std::cout<<"_________________"<<std::endl;
     displayVec3(leafPaths);
-    std::vector<int> part = {1,1};
-    std::vector<std::vector<int>> par = {{1,2},{1,2}};
-    std::vector<std::pair<int, int> > vec1 = { {1, 0}, {2,0}, {3,1} };
-    std::vector<int> Leaves = tree.leaves();
-    for (int i = 0; i < Leaves.size(); i++) {
-      int leaf = Leaves[i];
-      std::vector<int> vec = par[i];
-      tree.addPaths({leaf,leaf}, vec);
-    }
-    int nLeaves = Leaves.size();
-    std::cout << nLeaves << std::endl;
-    std::cout << "Leaves: ";
-    printVector(Leaves);
 
     std::vector<double> angles = layout.angle(-180,3);
     std::vector<double> left = layout.left(90,2);
@@ -64,9 +69,9 @@ int main() {
     printVectord(left);
 
     // Display the adjacency list and the degree of each vertex
-    tree.printGraph();
-    tree.PrintDegree();
-    tree.PrintLeaves();    
+    // tree.printGraph();
+    // tree.PrintDegree();
+    // tree.PrintLeaves();    
     std::cout<<"Last vertex: "<<tree.emptyVertex()<<std::endl;    
 
     std::vector<int> core = createVector(0, c-1);

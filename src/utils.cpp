@@ -19,6 +19,14 @@ void printVectord(std::vector<double> vec){
   std::cout << std::endl;
 }
 
+void print2DVector(const std::vector<std::vector<int>>& vec) {
+    for (const auto& row : vec) {
+        for (int element : row) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 std::vector<int> slicing(std::vector<int>& arr, int X, int Y) {
     // Starting and Ending iterators
@@ -100,9 +108,60 @@ void printPermutations(const IntVector2D& allPermutations){
     std::cout << allPermutations.size() << std::endl;
 }
 
+// Main function to generate all permutations of a vector of sum n and length r
+void part(int n, std::vector<int>& v, int level, int r, std::vector<std::vector<int>>& result) {
+    int first; /* first is before last */
 
+    if (n < 1) return;
+    v[level] = n;
+    if (level + 1 == r) {
+      std::vector<int> temp(v.begin(), v.begin() + r); // Store only the first r elements
+      result.push_back(temp); // Store the part in the result vector
+      return;
+    }
 
+    if (level == 0) {
+      first = 1;
+    } else {
+      first = v[level - 1];
+    }
 
+    // first = (level == 0) ? 1 : v[level - 1];
+
+    for (int i = first; i <= n / 2; i++) {
+        v[level] = i; /* replace last */
+        part(n - i, v, level + 1, r, result);
+    }
+}
+
+// Function to generate all partitions of a vector of sum n and length r (not necessary with v, level result as input)
+std::vector<std::vector<int>> partition(int n, int r) {
+  std::vector<int> v(n);
+  std::vector<std::vector<int>> result;
+  part(n, v, 0, r, result);
+  return result;
+}
+
+IntVector2D filterVectors(const IntVector2D& vecOfVecs, int threshold) {
+  IntVector2D filteredVecs;
+  for (const auto& vec : vecOfVecs) {
+    int countOnes = 0;
+    for (int elem : vec) {
+      if (elem == 1) {
+	countOnes++;
+      }
+    }
+    
+    if (countOnes == 0 || countOnes > threshold) {
+      filteredVecs.push_back(vec);
+    }
+    // if (countOnes > threshold) {
+    //   filteredVecs.push_back(vec);
+    // }
+  }
+  
+  return filteredVecs;
+}
 // std::vector<int> vecw(3);
 
     // // fills the vector from 1 to N
