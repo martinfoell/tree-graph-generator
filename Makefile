@@ -50,5 +50,17 @@ slice:
 	g++ ./test/slice.cpp  -o ./bin/slice
 	./bin/slice
 
+compare:
+	g++ ./test/compare.cpp  -o ./bin/compare
+	./bin/compare
+
+removedup:
+	g++ ./test/removedup.cpp  -o ./bin/removedup
+	./bin/removedup
+
+removedup2:
+	g++ ./test/removedup2.cpp  -o ./bin/removedup2
+	./bin/removedup2
+
 
 
