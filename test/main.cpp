@@ -1,10 +1,13 @@
 #include <iostream>
+#include <utility>
 #include "../include/tree.hpp"
 #include "../include/tikz.hpp"
 #include "../include/utils.hpp"
+#include "../include/layout.hpp"
 
 int main() {
-    int V = 6; // Number of vertices in the graph
+    Layout layout;
+    int V = 12; // Number of vertices in the graph
 
     int p = 1;
     int paths = 4;
@@ -15,14 +18,25 @@ int main() {
 
     tree = treeCore;
 
+    std::vector<int> partition = {1,1,2,2};
+    std::vector<int> part = {1,1};
+    std::vector<std::vector<int>> par = {{1,2},{1,2}};
+    std::vector<std::pair<int, int> > vec1 = { {1, 0}, {2,0}, {3,1} };
     std::vector<int> leaves = tree.leaves();
+    for (int i = 0; i < leaves.size(); i++) {
+      int leaf = leaves[i];
+      std::vector<int> vec = par[i];
+      tree.addPaths({leaf,leaf}, vec);
+    }
     int nleaves = leaves.size();
     std::cout << nleaves << std::endl;
     std::cout << "leaves: ";
     printVector(leaves);
-    
 
- 
+    std::vector<double> angles = layout.angle(-180,3);
+    std::vector<double> left = layout.left(90,2);
+    printVectord(angles);
+    printVectord(left);
 
     // Display the adjacency list and the degree of each vertex
     tree.printGraph();
