@@ -83,6 +83,32 @@ void displayVec3(const IntVector3D& vec3) {
     }
 }
 
+void displayVec4(const IntVector4D& vec4) {
+    for (const auto& vec3 : vec4) {
+        for (const auto& vec2 : vec3) {
+            for (const auto& vec1 : vec2) {
+                for (const auto& num : vec1) {
+                    std::cout << num << " ";
+                }
+                std::cout << "| ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "--------" << std::endl; // Separate each 3D slice
+    }
+}
+
+IntVector2D flattenVec3ToVec2(const IntVector3D& vec3) {
+  IntVector2D flattenedVec2;
+  for (const auto& vec2 : vec3) {
+    for (const auto& vec1 : vec2) {
+      // Merge the inner vectors into a single vector
+      flattenedVec2.push_back(vec1);
+    }
+  }
+  return flattenedVec2;
+}
+
 IntVector2D permutations(std::vector<int> vector){
     // Sorting the vector to get the initial permutation
     std::sort(vector.begin(), vector.end());
@@ -162,6 +188,66 @@ IntVector2D filterVectors(const IntVector2D& vecOfVecs, int threshold) {
   
   return filteredVecs;
 }
+
+IntVector2D pathConfig(int paths, int nleaves, int n_ones){
+  return filterVectors(partition(paths, nleaves),n_ones);
+}
+
+IntVector2D pathConfigSplits(int paths, int nleaves, int n_ones){
+  IntVector2D paths_config_splits;
+  IntVector2D paths_config = pathConfig(paths, nleaves, n_ones);
+  for (int i = 0; i < paths_config.size(); i++){
+    std::vector<int> paths_split = cumulative(paths_config[i]);			
+    paths_config_splits.push_back(paths_split);
+  }
+  return paths_config_splits;
+}
+
+
+// Function to generate all path configurarions on n leaves of the total number of nodes on the paths
+IntVector3D leafPaths(int n_paths, int n_leaves, int total_path_nodes, int n_ones){
+    // different configuratios for possible number of paths for each leaf from nleaves
+    std::vector<std::vector<int>> paths_config = filterVectors(partition(n_paths, n_leaves),n_ones);
+    
+    // splitting configurartions of the paths for each leaf
+    std::vector<std::vector<int>> paths_config_splits;
+    for (int i = 0; i < paths_config.size(); i++){
+      std::vector<int> paths_split = cumulative(paths_config[i]);			
+      paths_config_splits.push_back(paths_split);
+    }
+
+    // different configuratios for number of nodes for each path
+    IntVector2D path_nodes = filterVectors(partition(total_path_nodes, n_paths),0);
+    // permutations of different configuratios for number of nodes for each path
+    IntVector3D nodes_paths_perm_3d;
+    for (int i = 0; i < path_nodes.size(); i++){
+      IntVector2D perm = permutations(path_nodes[i]);
+      nodes_paths_perm_3d.push_back(perm);
+    }
+    
+    // flatten the 3d vector to 2d
+    IntVector2D nodes_paths_perm_2d = flattenVec3ToVec2(nodes_paths_perm_3d);
+    
+    // filter and slice the permutations to get the ones that are valid
+    IntVector3D leaf_paths;
+    
+    for (int i = 0; i < paths_config_splits.size(); i++){
+      std::vector<int> paths_config_split = paths_config_splits[i];
+      for (int j = 0; j < nodes_paths_perm_2d.size(); j++ ){
+	IntVector single_permutation = nodes_paths_perm_2d[j];
+	IntVector2D leaf_paths_perm;	
+	for (int k = 0; k < paths_config_split.size()-1; k++ ){
+	  // slice the permutation into the leaf paths
+	  IntVector spl = slicing(single_permutation, paths_config_split[k], paths_config_split[k+1]-1);
+	  leaf_paths_perm.push_back(spl);
+	}
+	leaf_paths.push_back(leaf_paths_perm);
+      }
+    }
+    sortVec3(leaf_paths);
+    return leaf_paths;
+}
+
 // std::vector<int> vecw(3);
 
     // // fills the vector from 1 to N

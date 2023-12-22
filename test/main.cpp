@@ -7,16 +7,50 @@
 
 int main() {
     Layout layout;
-    int V = 12; // Number of vertices in the graph
-
-    int p = 1;
-    int c = 4;
-    Tree treeCore(V); // Create a tree with 5 vertices
+    int V = 8; // Number of vertices in the graph
     Tree tree(V);
-    treeCore.corePath(c);
+    
+    int p = 1;
+    int main_path = 2;
+    int total_path_nodes = 6;
+    std::cout << "total_path_nodes: " << total_path_nodes << std::endl;
+    if (main_path > 1){
+      Tree mainPath(V); // Create a tree with 5 vertices
+      // initalize the main path
+      mainPath.corePath(main_path);
+      tree = mainPath;
+    }
+    tree.printGraph();
 
-    tree = treeCore;
+
+    // Copy the core tree to the main tree
+    // tree = mainPath;
     std::vector<int> leaves = tree.leaves();
+    int n_paths = 4;
+    int n_leaves = leaves.size();
+    std::cout << n_leaves << std::endl;
+    std::cout << "leaves: ";
+    printVector(leaves);
+
+ 
+    IntVector3D leaf_paths = leafPaths(n_paths, n_leaves, total_path_nodes, 1);
+
+    
+    
+    std::cout << "leaf_paths: "<< std::endl;
+    displayVec3(leaf_paths);
+
+
+    
+    std::vector<int> leaves_dist = {2,2};
+    
+    std::vector<int> partition2 = {1,1,2,2};
+
+    
+    // std::vector<std::vector<int>> partition_perm = permutations(partition2);
+    // std::vector<int> leaves_split = cumulative(leaves_dist);
+    
+    
     std::vector<int> part = {1,1};
     std::vector<std::vector<int>> par = {{1,2},{1,2}};
     std::vector<std::pair<int, int> > vec1 = { {1, 0}, {2,0}, {3,1} };
@@ -26,42 +60,9 @@ int main() {
       std::vector<int> vec = par[i];
       tree.addPaths({leaf,leaf}, vec);
     }
-    int nleaves = leaves.size();
-    std::cout << nleaves << std::endl;
-    std::cout << "leaves: ";
-    printVector(leaves);
+    tree.printGraph();
+    tree.PrintDegree();
     
-    std::vector<int> partition2 = {1,1,2,2};
-    
-    int paths = 6;
-    std::vector<std::vector<int>> paths_config = filterVectors(partition(paths, nleaves),1);
-    std::vector<int> leaves_dist = {2,2};
-    print2DVector(paths_config);
-    
-    std::vector<std::vector<int>> partition_perm = permutations(partition2);
-    std::vector<int> leaves_split = cumulative(leaves_dist);
-
-    printVector(leaves_split);
-    for (int i = 0; i < partition_perm.size(); i++ ){
-      printVector(partition_perm[i]);      
-    }
-
-    IntVector3D leafPaths;
-    IntVector2D leafPaths_perm;
-    for (int i = 0; i < partition_perm.size(); i++ ){
-      IntVector single_permutation = partition_perm[i];
-      IntVector2D leafPaths_perm;	
-      for (int j = 0; j < leaves_split.size()-1; j++ ){
-	IntVector spl = slicing(single_permutation, leaves_split[j], leaves_split[j+1]-1);
-	leafPaths_perm.push_back(spl);
-      }
-      leafPaths.push_back(leafPaths_perm);
-    }
-
-    displayVec3(leafPaths);
-    sortVec3(leafPaths);
-    std::cout<<"_________________"<<std::endl;
-    displayVec3(leafPaths);
 
     std::vector<double> angles = layout.angle(-180,3);
     std::vector<double> left = layout.left(90,2);
@@ -74,7 +75,7 @@ int main() {
     // tree.PrintLeaves();    
     std::cout<<"Last vertex: "<<tree.emptyVertex()<<std::endl;    
 
-    std::vector<int> core = createVector(0, c-1);
+    std::vector<int> core = createVector(0, main_path-1);
     
     tikzloop();
     tikzset();
