@@ -250,6 +250,26 @@ IntVector3D leafPaths(int n_paths, int n_leaves, int total_path_nodes, int n_one
     return leaf_paths;
 }
 
+
+
+void createDirectory(std::string foldername) {
+  fs::path currentPath = fs::current_path();
+  std::string pathAsString = currentPath.string();
+  std::string mainDir = pathAsString + "/tex/tikz";
+  std::cout << "Current directory: " << currentPath << std::endl;
+  std::string directoryPath = mainDir + "/"+foldername;
+  // Check if the directory already exists
+  if (!fs::exists(directoryPath)) {
+    // Create the directory
+    if (fs::create_directory(directoryPath)) {
+      std::cout << "Directory created successfully!" << std::endl;
+    } else {
+      std::cout << "Failed to create directory!" << std::endl;
+    }
+  } else {
+    std::cout << "Directory already exists!" << std::endl;
+  }
+}
 // std::vector<int> vecw(3);
 
     // // fills the vector from 1 to N

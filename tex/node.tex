@@ -4,42 +4,38 @@
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
+\usepackage{ifthen}
+
+
+\newcommand{\checkNumberModulo}[2]{%
+  \ifthenelse{\modulo{#1}{#2}=0}%
+  {\newline\vspace{4cm}}% If number is zero
+    {\hspace{1cm}}% If number is not zero
+  }
+
+% Modulo command
+\makeatletter
+\newcommand{\modulo}[2]{%
+  \number\numexpr#1-#2*(\number\numexpr(#1/#2)\relax)\relax
+}
+\makeatother
+
 \begin{document}
 
 \input{tikzset}
 
-% \begin{minipage}{3cm}
+\def\mod{3};
 
-\begin{tikzpicture}
-  % \node (A) {A};
-  \def\prev{0} % Variable to store the previous element
-  \def\numbers{1,2,3,4,5}
-  \def\angle{45}
-  \coordinate (\prev) at (0,0);
-  \input{tikzloop.tikz}
-
-  \def\prev{0}
-  \def\numbers{6,7,8}
-  \def\angle{-45}
-  \coordinate (\prev) at (0,0);
-  \input{tikzloop.tikz}  
-  
-\end{tikzpicture}
-
-
-\begin{tikzpicture}
-  \input{core.tikz}
-  \input{loop.tikz}
-\end{tikzpicture}
-
-\foreach \i in {0,1,2}{
-\begin{tikzpicture}
+\foreach \i in {1,2,3,4,5,6,7,8,9,10,11,12,13,14}{
+\begin{tikzpicture}[scale=0.7,baseline]
   \input{core.tikz}
   \input{loop.tikz}
   \foreach \j in {1,2,3,4}{
     \input{tikz/path_\i_\j.tikz}
     \input{loop.tikz}}
-\end{tikzpicture}}
+\end{tikzpicture}
+\checkNumberModulo{\i}{\mod}}
+% \checkNumber{\modulo{\i}{4}}}
 
 % \end{minipage}
   

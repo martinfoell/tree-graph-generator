@@ -4,6 +4,9 @@
 #include "../include/tikz.hpp"
 #include "../include/utils.hpp"
 #include "../include/layout.hpp"
+#include <algorithm>
+#include <iostream>
+#include <string_view>
 
 int main() {
     Layout layout;
@@ -36,10 +39,19 @@ int main() {
     IntVector3D leaf_paths = leafPaths(n_paths, n_leaves, total_path_nodes, 1);
     std::cout << "leaf_paths: "<< std::endl;
     displayVec3(leaf_paths);
-
-
+    size_t n_zero = 4;
+    // int n_zero = 3;
+    std::string old_str = "11";
+    int a = 5;
+    int b = 7;
+    std::cout << std::min(a, b) << "\n";
+    auto new_str = std::string(n_zero - std::min(n_zero, old_str.length()), '0') + old_str;
+    std::cout << "neww " << new_str << std::endl;
     int index = 1;
-    
+    std::string node_folder = "n"+std::to_string(V);
+    createDirectory(node_folder);
+    std::string leaf_folder = node_folder + "/l"+std::to_string(n_paths);
+    createDirectory(leaf_folder);
     for (int k = 0; k < leaf_paths.size(); k++){
       int last_node = main_path;
       int tikz_index = 1;
@@ -53,7 +65,9 @@ int main() {
 	  int start_node = leaves[i];
 	  IntVector vec = createVector(last_node, last_node + leaf_path[j] - 1);
 	  int angle = angles[j];
-	  std::string name = "path_"+ std::to_string(k+1) + "_" + std::to_string(tikz_index);
+	  std::string k_old = std::to_string(k+1);
+	  auto k_new = std::string(n_zero - std::min(n_zero, k_old.length()), '0') + k_old;
+	  std::string name = "path_"+ k_new + "_" + std::to_string(tikz_index);
 	  tikzAddPath(name, start_node, vec, angle);
 	  
 	  // printing

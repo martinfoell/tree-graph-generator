@@ -14,8 +14,8 @@ pdf-main:
 	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2
 	./bin/main2
 	cd tex/ && \
-	pdflatex node.tex && \
-	evince node.pdf
+	pdflatex node2.tex && \
+	evince node2.pdf
 
 write:
 	g++ ./test/write_vector.cpp  -o ./bin/write
@@ -61,6 +61,10 @@ removedup:
 removedup2:
 	g++ ./test/removedup2.cpp  -o ./bin/removedup2
 	./bin/removedup2
+
+filesystem:
+	g++ -std=c++17 ./test/filesystem.cpp  -o ./bin/filesystem 
+	./bin/filesystem
 
 
 
