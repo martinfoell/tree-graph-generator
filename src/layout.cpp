@@ -20,5 +20,11 @@ std::vector<double> Layout::half(double angle, int n, int rotation){
     angles.push_back(angle + rotation*45);
     angles.push_back(angle + rotation*180 - rotation*45);    
   }
+  else if (n > 2) {
+    double angle_step = 180/(n-1);
+    for (int i = 0; i <= n; i++) {
+      angles.push_back(angle + rotation*angle_step*i);
+    }
+  }
   return angles;
 }

@@ -10,11 +10,12 @@
 
 int main() {
     Layout layout;
-    int V = 10; // Number of vertices in the graph
+    int V = 12; // Number of vertices in the graph
     Tree tree(V);
+    Tikz tikz;
     
     int main_path = 3;
-    int n_paths = 4;
+    int n_paths = 6;
     int total_path_nodes = V - main_path;
     std::cout << "total_path_nodes: " << total_path_nodes << std::endl;
     
@@ -46,19 +47,21 @@ int main() {
     createDirectory(node_folder);
     std::string leaf_folder = node_folder + "/l"+std::to_string(n_paths);
     createDirectory(leaf_folder);
-
+    deleteFilesInFolder("");
     
     // loop over all different configurations of the leaf paths
     for (int k = 0; k < leaf_paths.size(); k++){
       int path_index = 1;
+      // use instead of empty_vertex if tikz only
       int last_node = main_path;
       // loop over all the leaves for one configuration
       for (int i = 0; i < leaf_paths[k].size(); i++) {
 	IntVector leaf_path = leaf_paths[k][i];
 	int leaf = leaves[i];
-	std::vector<double> angles = layout.half(-90,2, -1+2*i);
 	// loop over each path for one leaf
 	for (int j = 0; j < leaf_path.size(); j++) {
+	  // std::cout << "length of leaf path: " << leaf_path.size() << std::endl;
+	  std::vector<double> angles = layout.half(-90, leaf_path.size(), -1+2*i);	  
 	  // the first empty node in the tree
 	  int empty_vertex = tree.emptyVertex();
 	  // add the path to the tree
@@ -66,9 +69,9 @@ int main() {
 	  // add the path to the tikz layout
 	  IntVector vec = createVector(last_node, last_node + leaf_path[j] - 1);
 	  std::string k_old = std::to_string(k+1);
-	  auto k_new = std::string(n_zero - std::min(n_zero, k_old.length()), '0') + k_old;
+	  std::string k_new = std::string(n_zero - std::min(n_zero, k_old.length()), '0') + k_old;
 	  std::string name = "path_"+ k_new + "_" + std::to_string(path_index);
-	  tikzAddPath(name, leaf, vec, angles[j]);
+	  tikz.addPath(name, leaf, vec, angles[j]);
 	  last_node += leaf_path[j];
 	  path_index++;
 	}
@@ -83,7 +86,7 @@ int main() {
     
     tree.printGraph();
     tree.PrintDegree();
-    
+    // deleteFilesInFolder("");    
 
     std::vector<double> angles = layout.angle(-180,3);
     std::vector<double> left = layout.half(90,2, 1);
@@ -100,9 +103,10 @@ int main() {
 
     std::vector<int> core = createVector(0, main_path-1);
     
-    tikzloop();
-    tikzset();
-    tikzPath("core", core, 0, 1, 0);
+    tikz.premable();
+    tikz.loop();
+    tikz.tikzset();
+    tikz.path("core", core, 0, 1, 0);
     return 0;
 }
 

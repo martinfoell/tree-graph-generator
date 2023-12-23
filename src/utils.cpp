@@ -270,6 +270,24 @@ void createDirectory(std::string foldername) {
     std::cout << "Directory already exists!" << std::endl;
   }
 }
+
+void deleteFilesInFolder(std::string foldername) {
+  fs::path currentPath = fs::current_path();
+  std::string pathAsString = currentPath.string();
+  std::string mainDir = pathAsString + "/tex/tikz";
+  std::cout << "Current directory: " << currentPath << std::endl;
+  std::string directoryPath = mainDir + "/"+foldername;
+  try {
+    for (const auto& entry : fs::directory_iterator(directoryPath)) {
+      if (fs::is_regular_file(entry.path())) {
+	fs::remove(entry.path());
+	std::cout << "Deleted: " << entry.path().string() << std::endl;
+      }
+    }
+  } catch (const fs::filesystem_error& e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+  }
+}
 // std::vector<int> vecw(3);
 
     // // fills the vector from 1 to N
