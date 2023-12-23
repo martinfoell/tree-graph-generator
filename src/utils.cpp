@@ -208,6 +208,8 @@ IntVector2D pathConfigSplits(int paths, int nleaves, int n_ones){
 IntVector3D leafPaths(int n_paths, int n_leaves, int total_path_nodes, int n_ones){
     // different configuratios for possible number of paths for each leaf from nleaves
     std::vector<std::vector<int>> paths_config = filterVectors(partition(n_paths, n_leaves),n_ones);
+    // std::vector<std::vector<int>> paths_config = filterVectors(partition(total_path_nodes, n_leaves),n_ones);
+    // std::vector<std::vector<int>> paths_config = filterVectors(partition(total_path_nodes, n_paths),n_ones);
     
     // splitting configurartions of the paths for each leaf
     std::vector<std::vector<int>> paths_config_splits;

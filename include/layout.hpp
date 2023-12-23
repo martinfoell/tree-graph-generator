@@ -40,7 +40,8 @@ public:
   Layout();
   
   std::vector<double> angle(double angle, int n);
-  std::vector<double> left(double angle, int n);
+  // std::vector<double> left(double angle, int n);
+  std::vector<double> half(double angle, int n, int rotation);  
 
 
   

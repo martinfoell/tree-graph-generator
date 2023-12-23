@@ -8,26 +8,23 @@
 
 \input{tikzset}
 
-\begin{minipage}{3cm}
+% \begin{minipage}{3cm}
 
+\begin{tikzpicture}
+  % \node (A) {A};
+  \def\prev{0} % Variable to store the previous element
+  \def\numbers{1,2,3,4,5}
+  \def\angle{45}
+  \coordinate (\prev) at (0,0);
+  \input{tikzloop.tikz}
 
-
-
-% \begin{tikzpicture}
-%   % \node (A) {A};
-%   \def\prev{0} % Variable to store the previous element
-%   \def\numbers{1,2,3,4,5}
-%   \def\angle{45}
-%   \coordinate (\prev) at (0,0);
-%   \input{tikzloop.tikz}
-
-%   \def\prev{0}
-%   \def\numbers{6,7,8}
-%   \def\angle{-45}
-%   \coordinate (\prev) at (0,0);
-%   \input{tikzloop.tikz}  
+  \def\prev{0}
+  \def\numbers{6,7,8}
+  \def\angle{-45}
+  \coordinate (\prev) at (0,0);
+  \input{tikzloop.tikz}  
   
-% \end{tikzpicture}
+\end{tikzpicture}
 
 
 \begin{tikzpicture}
@@ -35,8 +32,16 @@
   \input{loop.tikz}
 \end{tikzpicture}
 
+\foreach \i in {0,1,2}{
+\begin{tikzpicture}
+  \input{core.tikz}
+  \input{loop.tikz}
+  \foreach \j in {1,2,3,4}{
+    \input{tikz/path_\i_\j.tikz}
+    \input{loop.tikz}}
+\end{tikzpicture}}
 
-\end{minipage}
+% \end{minipage}
   
 
 \end{document}

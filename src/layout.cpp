@@ -14,11 +14,11 @@ std::vector<double> Layout::angle(double angle, int n){
   return angles;
 }
 
-std::vector<double> Layout::left(double angle, int n){
+std::vector<double> Layout::half(double angle, int n, int rotation){
   std::vector<double> angles;
   if (n == 2) {
-    angles.push_back(angle+45);
-    angles.push_back(angle+180-45);    
+    angles.push_back(angle + rotation*45);
+    angles.push_back(angle + rotation*180 - rotation*45);    
   }
   return angles;
 }
