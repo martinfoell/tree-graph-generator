@@ -64,7 +64,7 @@ void Tree::addNodeInbetween(int u, int v, int v_new)
 }
 
 // adds a branch to a node u in a tree with length l starting from node v
-void Tree::addPath(int curr, int next, int l){
+void Tree::addPath(int curr, int next, int length){
   //add brach from u to next if they are not equal
   if (curr != next){
     adjList[curr].push_back(next);
@@ -72,10 +72,10 @@ void Tree::addPath(int curr, int next, int l){
   }
   else if (curr == next){
     // need to combensate since u and next are the same
-    l+=1;
+    length+=1;
   }
   //add branch from next to next+l
-  for (int i = 0; i < l-1; i++){
+  for (int i = 0; i < length-1; i++){
     adjList[next+i].push_back(next + i + 1);
     adjList[next + i + 1].push_back(next + i);
   }

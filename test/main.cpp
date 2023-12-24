@@ -41,7 +41,7 @@ int main() {
     std::cout << "leaf_paths: "<< std::endl;
     displayVec3(leaf_paths);
     
-    size_t n_zero = 3;
+    size_t digits = 3;
 
     std::string node_folder = "n"+std::to_string(V);
     createDirectory(node_folder);
@@ -51,6 +51,7 @@ int main() {
     
     // loop over all different configurations of the leaf paths
     for (int k = 0; k < leaf_paths.size(); k++){
+      int tree_index = 0;      
       int path_index = 1;
       // use instead of empty_vertex if tikz only
       int last_node = main_path;
@@ -66,26 +67,27 @@ int main() {
 	  int empty_vertex = tree.emptyVertex();
 	  // add the path to the tree
 	  tree.addPath(leaf, empty_vertex, leaf_path[j]);
+	  tikz.addPath(V, n_paths, leaf, last_node,  leaf_path[j], digits, k, path_index, angles[j]);
 	  // add the path to the tikz layout
 	  IntVector vec = createVector(last_node, last_node + leaf_path[j] - 1);
 	  std::string k_old = std::to_string(k+1);
-	  std::string k_new = std::string(n_zero - std::min(n_zero, k_old.length()), '0') + k_old;
+	  std::string k_new = std::string(digits - std::min(digits, k_old.length()), '0') + k_old;
 	  std::string name = "path_"+ k_new + "_" + std::to_string(path_index);
-	  tikz.addPath(name, leaf, vec, angles[j]);
+	  tikz.addPathBkg(name, leaf, vec, angles[j]);
 	  last_node += leaf_path[j];
 	  path_index++;
 	}
       }
+      std::cout << "tree_index: " << tree_index << std::endl;
       // tree.printGraph();
       tree.clear();
       tree = mainPath;
     }
-    
-
-    
-    
-    tree.printGraph();
-    tree.PrintDegree();
+    tikz.inputTrees(V, 3, digits, leaf_paths.size(), n_paths);
+    tikz.mainAppend(V, n_paths);
+    // tree.printGraph();
+    // tree.PrintDegree();
+    // tree.PrintLeaves();        
     // deleteFilesInFolder("");    
 
     std::vector<double> angles = layout.angle(-180,3);
@@ -95,10 +97,6 @@ int main() {
     printVectord(left);
     printVectord(right);
 
-    // Display the adjacency list and the degree of each vertex
-    // tree.printGraph();
-    // tree.PrintDegree();
-    // tree.PrintLeaves();    
     std::cout<<"Last vertex: "<<tree.emptyVertex()<<std::endl;    
 
     std::vector<int> core = createVector(0, main_path-1);
