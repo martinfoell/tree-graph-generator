@@ -130,6 +130,32 @@ void Tikz::addPath(int V, int l,int curr, int next, int length, size_t digits, i
   }
   file << "}\n";
   file << "\\def\\angle{"<< angle <<"}\n";
+  file.close();
+}
+
+void Tikz::appendPath(int V, int l,int curr, int next, int length, size_t digits, int tree_index, double angle){
+  // vector containing the numbers in the path
+  IntVector numbers = createVector(next, next + length - 1);
+  // the index of the tree in the loop
+  std::string index_old = std::to_string(tree_index+1);
+  std::string index_new = std::string(digits - std::min(digits, index_old.length()), '0') + index_old;
+  std::string filename = "tree_"+ index_new;
+
+  std::string filePath = "tex/tikz/n" + std::to_string(V) + "/l" + std::to_string(l) + "/" + filename + ".tikz";
+  std::ofstream file(filePath, std::ios::app);
+  file << "\\def\\prev{"<< curr <<"}\n";
+  file << "\\def\\numbers{";
+  for (size_t i = 0; i < numbers.size(); ++i) {
+    file << numbers[i];
+    if (i != numbers.size() - 1) {
+      file << ",";
+    }
+  }
+  file << "}\n";
+  file << "\\def\\angle{"<< angle <<"}\n";
+  file << "\\input{loop.tikz}\n";
+  
+  file.close();
 }
 
 void Tikz::addPathBkg(std::string filename, int start_node, std::vector<int> numbers, double angle){
@@ -184,6 +210,27 @@ void Tikz::inputTrees(int V, int width, size_t digits, int n_trees, int n_leaves
   }
 }
 
+void Tikz::makeTrees(int V, int width, size_t digits, int n_trees, int n_leaves) {
+  int digits_int = static_cast<int>(digits);    
+  std::cout << "digits" << digits_int << std::endl;
+  std::string filePath = "tex/tikz/n" + std::to_string(V) + "/l" + std::to_string(n_leaves) + "/input_trees.tex";
+  std::ofstream File(filePath);
+  if (File.is_open()) {
+    std::ostringstream file;
+    file << "\\foreach \\i in {1,...," << n_trees << "}{\n";
+    file << "  \\begin{tikzpicture}[scale=0.3,baseline={(0,0)}]\n";
+    file << "    \\input{core.tikz}\n";
+    file << "    \\input{loop.tikz}\n";
+    file << "    \\input{tikz/n" << V << "/l" << n_leaves << "/tree_\\padnum{" << digits_int << "}{\\i}.tikz}\n";
+    file << "  \\end{tikzpicture}\n";
+    file << "  \\checkNumberModulo{\\i}{" << width << "}\n";
+    file << "}\n";
+    
+    File << file.str();
+    File.close();
+  }
+}
+
 bool Tikz::appendBody(int V, int l){
   std::ofstream file("tex/body.tex", std::ios::app);
   if (file.is_open()) {
@@ -195,6 +242,7 @@ bool Tikz::appendBody(int V, int l){
     return false; // append unsuccessful
   }
 }
+
 
 void Tikz::deleteBody(){
   fs::path currentPath = fs::current_path();
@@ -237,10 +285,11 @@ void Tikz::deleteFilesInFolder(int V, int l) {
     for (const auto& entry : fs::directory_iterator(directoryPath)) {
       if (fs::is_regular_file(entry.path())) {
 	fs::remove(entry.path());
-	std::cout << "Deleted: " << entry.path().string() << std::endl;
+	// std::cout << "Deleted: " << entry.path().string() << std::endl;
       }
     }
   } catch (const fs::filesystem_error& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
+  std::cout << "Deleted all files in " << "/tex/tikz/n"+std::to_string(V) + "/l" + std::to_string(l) << std::endl;
 }
