@@ -29,7 +29,15 @@ public:
   
   void corePath(std::vector<int> numbers, double angle);
   void inputTrees(int V, int width, size_t n_zero, int n_trees, int n_leaves);
-  bool mainAppend(int V, int l);  
+  
+  bool appendBody(int V, int l);
+  void deleteBody();
+  
+  bool mainAppend(int V, int l);
+  void writeMain();
+
+  void deleteFilesInFolder(int V, int l);  
+  // void deleteFilesInFolder(std::string foldername);  
   // void inputTrees(int V, int width, int n_zero, int n_trees, int n_leaves);  
   
 

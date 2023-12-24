@@ -162,7 +162,7 @@ void Tikz::corePath(std::vector<int> numbers, double angle){
 
 void Tikz::inputTrees(int V, int width, size_t digits, int n_trees, int n_leaves) {
   int digits_int = static_cast<int>(digits);    
-  std::string zero(digits_int,'0');
+  std::cout << "digits" << digits_int << std::endl;
   std::string filePath = "tex/tikz/n" + std::to_string(V) + "/l" + std::to_string(n_leaves) + "/input_trees.tex";
   std::ofstream File(filePath);
   if (File.is_open()) {
@@ -172,7 +172,7 @@ void Tikz::inputTrees(int V, int width, size_t digits, int n_trees, int n_leaves
     file << "    \\input{core.tikz}\n";
     file << "    \\input{loop.tikz}\n";
     file << "    \\foreach \\j in {1,...," << n_leaves << "}{\n";
-    file << "      \\input{tikz/path_\\padnum{" << digits_int << "}{\\i}_\\j.tikz}\n";
+    file << "      \\input{tikz/n" << V << "/l" << n_leaves << "/path_\\padnum{" << digits_int << "}{\\i}_\\j.tikz}\n";
     file << "      \\input{loop.tikz}\n";
     file << "    }\n";
     file << "  \\end{tikzpicture}\n";
@@ -184,8 +184,8 @@ void Tikz::inputTrees(int V, int width, size_t digits, int n_trees, int n_leaves
   }
 }
 
-bool Tikz::mainAppend(int V, int l){
-  std::ofstream file("body.tex", std::ios::app);
+bool Tikz::appendBody(int V, int l){
+  std::ofstream file("tex/body.tex", std::ios::app);
   if (file.is_open()) {
     file << "\\input{tikz/n" << V << "/l" << l << "/input_trees}\n";        
     file.close();
@@ -193,5 +193,54 @@ bool Tikz::mainAppend(int V, int l){
     } else {
     std::cout << "Unable to open file for appending.\n";
     return false; // append unsuccessful
+  }
+}
+
+void Tikz::deleteBody(){
+  fs::path currentPath = fs::current_path();
+  std::string pathAsString = currentPath.string();
+  std::string deletefile = pathAsString + "/tex/body.tex";
+  try {
+    if (std::filesystem::remove(deletefile))
+       std::cout << "file " << deletefile << " deleted.\n";
+    else
+       std::cout << "file " << deletefile << " not found.\n";
+  }
+  catch(const std::filesystem::filesystem_error& err) {
+     std::cout << "filesystem error: " << err.what() << '\n';
+  }
+}
+
+void Tikz::writeMain() {
+    std::ofstream file("main.tex");
+
+    if (file.is_open()) {
+        file << "\\input{preamble}\n";
+        file << "\\begin{document}\n";
+        file << "\\input{tikzset}\n";
+        file << "\\input{body}\n";
+        file << "\\end{document}\n";
+
+        file.close();
+    } else {
+        std::cout << "Unable to open file for writing.\n";
+    }
+}
+
+void Tikz::deleteFilesInFolder(int V, int l) {
+  fs::path currentPath = fs::current_path();
+  std::string pathAsString = currentPath.string();
+  std::string mainDir = pathAsString + "/tex/tikz";
+  std::cout << "Current directory: " << currentPath << std::endl;
+  std::string directoryPath = mainDir + "/n"+std::to_string(V) + "/l" + std::to_string(l);
+  try {
+    for (const auto& entry : fs::directory_iterator(directoryPath)) {
+      if (fs::is_regular_file(entry.path())) {
+	fs::remove(entry.path());
+	std::cout << "Deleted: " << entry.path().string() << std::endl;
+      }
+    }
+  } catch (const fs::filesystem_error& e) {
+    std::cerr << "Error: " << e.what() << std::endl;
   }
 }

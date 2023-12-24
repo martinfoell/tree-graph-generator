@@ -14,8 +14,8 @@ int main() {
     Tree tree(V);
     Tikz tikz;
     
-    int main_path = 3;
-    int n_paths = 6;
+    int main_path = 2;
+    int n_paths = 5;
     int total_path_nodes = V - main_path;
     std::cout << "total_path_nodes: " << total_path_nodes << std::endl;
     
@@ -23,7 +23,10 @@ int main() {
     // initalize the main path
     mainPath.corePath(main_path);
     tree = mainPath;
-
+    
+    // delete the content of the body of the main.tex file
+    tikz.deleteBody();
+    
     // tree.printGraph();
 
     std::vector<std::vector<int>> pp = partition(5, 2);
@@ -41,13 +44,15 @@ int main() {
     std::cout << "leaf_paths: "<< std::endl;
     displayVec3(leaf_paths);
     
-    size_t digits = 3;
-
+    // number of digits in tree index
+    size_t digits = 5;
+    // number of trees in a row
+    int width = 6;
     std::string node_folder = "n"+std::to_string(V);
-    createDirectory(node_folder);
     std::string leaf_folder = node_folder + "/l"+std::to_string(n_paths);
+    createDirectory(node_folder);
     createDirectory(leaf_folder);
-    deleteFilesInFolder("");
+    tikz.deleteFilesInFolder(V, n_paths);
     
     // loop over all different configurations of the leaf paths
     for (int k = 0; k < leaf_paths.size(); k++){
@@ -68,23 +73,18 @@ int main() {
 	  // add the path to the tree
 	  tree.addPath(leaf, empty_vertex, leaf_path[j]);
 	  tikz.addPath(V, n_paths, leaf, last_node,  leaf_path[j], digits, k, path_index, angles[j]);
-	  // add the path to the tikz layout
-	  IntVector vec = createVector(last_node, last_node + leaf_path[j] - 1);
-	  std::string k_old = std::to_string(k+1);
-	  std::string k_new = std::string(digits - std::min(digits, k_old.length()), '0') + k_old;
-	  std::string name = "path_"+ k_new + "_" + std::to_string(path_index);
-	  tikz.addPathBkg(name, leaf, vec, angles[j]);
 	  last_node += leaf_path[j];
 	  path_index++;
 	}
       }
-      std::cout << "tree_index: " << tree_index << std::endl;
       // tree.printGraph();
       tree.clear();
       tree = mainPath;
     }
-    tikz.inputTrees(V, 3, digits, leaf_paths.size(), n_paths);
-    tikz.mainAppend(V, n_paths);
+    tikz.inputTrees(V, width, digits, leaf_paths.size(), n_paths);
+    tikz.appendBody(V, n_paths);
+    
+    tikz.writeMain();
     // tree.printGraph();
     // tree.PrintDegree();
     // tree.PrintLeaves();        
@@ -107,28 +107,4 @@ int main() {
     tikz.path("core", core, 0, 1, 0);
     return 0;
 }
-
-    // erase and use treeCore again
-    // tree.clear();
-    // tree = treeCore;
-    
-    
-    // tree.addPaths({0}, {path});
-    // Add edges
-    // Tree tree(V);
-    // tree.addPaths({0,0,0}, {4,3,2});
-    // tree.clear();
-    // tree.addEdge(0, 1);
-    // tree.addPath(1, 2, 3);
-    // tree.addNodeInbetween(0, 1, 2);
-
-	  // // printing
-	  // std::cout << "start_node: " << start_node << std::endl;
-	  // std::cout << "vec: ";
-	  // printVector(vec);
-	  // std::cout << "angle: " << angle << std::endl;	
-
-	// printVector(leaf_path);
-	// std::vector<int> leaf(leaf_paths.size(), leaves[i]);
-	// tree.addPaths(leaf, leaf_path);
 
