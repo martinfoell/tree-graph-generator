@@ -42,14 +42,15 @@ public:
   Tree(int vertices);
 
   // Find the degree of a vertex
-  int degree(int v);
+  int degree(int vertex);
   
   // Make a map of all vertices with degree above n, and save the degree of each vertex
   std::map<int,int> degree_n(int n);
   
   // Function to find all leaves in the tree
   std::vector<int> leaves();
-  
+
+  std::vector<int> leavesCentral(int V_central);  
   // Function to find the first empty vertex in the adjacency list
   int emptyVertex();
   
@@ -60,13 +61,13 @@ public:
   void addNodeInbetween(int u, int v, int v_new);
 
   // Function to add a path from a curent nude to the next and so on with length l
-  void addPath(int curr, int next, int l);
+  void addPath(int curr, int next, int length);
 
   // Function to add a path from a set of nodes into a set of partitions
-  void addPaths(std::vector<int> nodes, std::vector<int> partion);
+  void addPaths(std::vector<int> vertices, std::vector<int> partion);
 
   // Function to add the core path from vertex 0 to l-1
-  void corePath(int l);
+  void centralPath(int length);
 
   // Clear the edges of the tree
   void clear();

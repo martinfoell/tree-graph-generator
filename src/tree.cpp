@@ -7,8 +7,8 @@ Tree::Tree(int vertices) {
     adjList.resize(V);
 }
 
-int Tree::degree(int v){
-  return adjList[v].size();
+int Tree::degree(int vertex){
+  return adjList[vertex].size();
 }
 
 // map with key as vertex and value as degree above n
@@ -32,6 +32,19 @@ std::vector<int> Tree::leaves(){
   return leaves_;
 }
 
+std::vector<int> Tree::leavesCentral(int V_central) {
+    // find the leaves on the main path
+    std::vector<int> leaves_central;
+    if (V_central == 1){
+      leaves_central = {0};
+    }
+    else if (V_central > 1){
+      leaves_central = leaves();      
+    }
+
+    return leaves_central;
+
+}
 int Tree::emptyVertex(){
     // Find the first empty vector in adj
     int emptyVertex = -1;
@@ -81,20 +94,20 @@ void Tree::addPath(int curr, int next, int length){
   }
 }
 
-void Tree::addPaths(std::vector<int> nodes, std::vector<int> partion){
+void Tree::addPaths(std::vector<int> vertices, std::vector<int> partion){
   // size of partition
   int n = partion.size();
   for (int i = 0; i < n; i++){
-    // highest node that is empty
+    // highest vertex that is empty
     int next = emptyVertex();
-    // add branch to node
-    addPath(nodes[i], next, partion[i]);
+    // add branch to vertex
+    addPath(vertices[i], next, partion[i]);
     next+=partion[i];
   }
 }
 
-void Tree::corePath(int l){
-  addPath(0, emptyVertex(), l-1);
+void Tree::centralPath(int length){
+  addPath(0, emptyVertex(), length-1);
 }
 
 void Tree::clear(){
