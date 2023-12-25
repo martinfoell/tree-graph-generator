@@ -71,6 +71,21 @@ void sortVec3(IntVector3D& vec3) {
     vec3.erase(std::unique(vec3.begin(), vec3.end()), vec3.end());
 }
 
+
+void sortVec3_lexi(IntVector3D& vec3) {
+    for (auto& vec2 : vec3) {
+        for (auto& vec1 : vec2) {
+            std::sort(vec1.begin(), vec1.end());
+        }
+        std::sort(vec2.begin(), vec2.end());
+    }
+
+    std::sort(vec3.begin(), vec3.end(), [](const auto& a, const auto& b) {
+        return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
+    });
+
+    vec3.erase(std::unique(vec3.begin(), vec3.end()), vec3.end());
+}
 void displayVec3(const IntVector3D& vec3) {
     for (const auto& vec2 : vec3) {
         for (const auto& vec1 : vec2) {
@@ -248,6 +263,54 @@ IntVector3D leafPaths(int n_paths, int n_leaves, int total_path_nodes, int n_one
     }
     sortVec3(leaf_paths);
     return leaf_paths;
+}
+
+// Function to generate all path configurarions on n leaves of the total number of nodes on the paths
+IntVector3D findAllPaths(int V, int L, int V_central, int L_central, int n_ones){
+  // Number of vertices on the paths from the central tree
+  int V_paths = V - V_central; 
+  // different configuratios for possible number of paths for each leaf from nleaves
+  IntVector2D P_distr = partition(L, L_central);
+  IntVector2D P_distr_1 = filterVectors(partition(L, L_central),n_ones);  
+  std::vector<std::vector<int>> paths_config = filterVectors(partition(L, L_central),n_ones);
+  
+  // splitting configurartions of the paths for each leaf
+  std::vector<std::vector<int>> paths_config_splits;
+  for (int i = 0; i < paths_config.size(); i++){
+    std::vector<int> paths_split = cumulative(paths_config[i]);			
+    paths_config_splits.push_back(paths_split);
+  }
+  
+  // different configuratios for the number of vertices for each path
+  IntVector2D V_path = filterVectors(partition(V_paths, L),0);
+  // permutations of different configuratios for number of nodes for each path
+  IntVector3D nodes_paths_perm_3d;
+  for (int i = 0; i < V_path.size(); i++){
+    IntVector2D perm = permutations(V_path[i]);
+    nodes_paths_perm_3d.push_back(perm);
+  }
+  
+  // flatten the 3d vector to 2d
+  IntVector2D nodes_paths_perm_2d = flattenVec3ToVec2(nodes_paths_perm_3d);
+  
+  // filter and slice the permutations to get the ones that are valid
+  IntVector3D leaf_paths;
+  
+  for (int i = 0; i < paths_config_splits.size(); i++){
+    std::vector<int> paths_config_split = paths_config_splits[i];
+    for (int j = 0; j < nodes_paths_perm_2d.size(); j++ ){
+      IntVector single_permutation = nodes_paths_perm_2d[j];
+      IntVector2D leaf_paths_perm;	
+      for (int k = 0; k < paths_config_split.size()-1; k++ ){
+	// slice the permutation into the leaf paths
+	IntVector spl = slicing(single_permutation, paths_config_split[k], paths_config_split[k+1]-1);
+	leaf_paths_perm.push_back(spl);
+      }
+      leaf_paths.push_back(leaf_paths_perm);
+    }
+  }
+  sortVec3_lexi(leaf_paths);
+  return leaf_paths;
 }
 
 

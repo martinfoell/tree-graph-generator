@@ -22,7 +22,8 @@ public:
   void loop();
   void inital(std::vector<int> numbers, double angle, double x, double y);
   void path(std::string filename, std::vector<int> numbers, double angle, double x, double y);
-  void centralPath(std::string filename, int V, double angle, double x, double y);  
+  void centralPath(std::string filename, int V, double angle);  
+  // void centralPath(std::string filename, int V, double angle, double x, double y);  
   // void addPath(std::string filename, int start_node, std::vector<int> numbers, double angle);
   void addPath(int V, int L,int curr, int next, int length, size_t digits, int tree_index, int path_index, double angle);  
   void appendPath(int V, int L,int curr, int next, int length, int digits, int tree_index, double angle);  

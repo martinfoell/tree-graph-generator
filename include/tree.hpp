@@ -46,7 +46,11 @@ public:
   
   // Make a map of all vertices with degree above n, and save the degree of each vertex
   std::map<int,int> degree_n(int n);
-  
+
+
+  int shortestPath(int source, int destination);
+  int diameter();
+    
   // Function to find all leaves in the tree
   std::vector<int> leaves();
 

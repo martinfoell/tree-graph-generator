@@ -11,6 +11,44 @@ int Tree::degree(int vertex){
   return adjList[vertex].size();
 }
 
+int Tree::shortestPath(int source, int destination){
+  std::vector<int> distance(V, INT_MAX);
+  std::vector<bool> visited(V, false);
+  std::queue<int> q;
+  
+  distance[source] = 0;
+  visited[source] = true;
+  q.push(source);
+  
+  while(!q.empty()){
+    int u = q.front();
+    q.pop();
+    
+    for(auto v : adjList[u]){
+      if(!visited[v]){
+	distance[v] = distance[u] + 1;
+	visited[v] = true;
+	q.push(v);
+      }
+    }
+  }
+  
+  return distance[destination];
+}
+
+int Tree::diameter(){
+  int max = 0;
+  for(int i = 0; i < V; i++){
+    for(int j = i+1; j < V; j++){
+      int dist = shortestPath(i, j);
+      if(dist > max){
+	max = dist;
+      }
+    }
+  }
+  return max;
+}
+
 // map with key as vertex and value as degree above n
 std::map<int,int> Tree::degree_n(int n){
   std::map<int,int> degree_map;
@@ -31,6 +69,7 @@ std::vector<int> Tree::leaves(){
   }
   return leaves_;
 }
+
 
 std::vector<int> Tree::leavesCentral(int V_central) {
     // find the leaves on the main path

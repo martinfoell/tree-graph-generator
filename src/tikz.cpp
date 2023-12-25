@@ -100,7 +100,7 @@ void Tikz::path(std::string filename, std::vector<int> numbers, double angle, do
   file << "}\n";
 }
 
-void Tikz::centralPath(std::string filename, int V, double angle, double x, double y){
+void Tikz::centralPath(std::string filename, int V, double angle){
   std::vector<int> numbers = createVector(0, V-1);
   std::string filePath = "tex/" + filename + ".tikz";
   std::ofstream file(filePath);
@@ -114,7 +114,7 @@ void Tikz::centralPath(std::string filename, int V, double angle, double x, doub
   }
   file << "}\n";
   file << "\\def\\angle{"<< angle <<"}\n";
-  file << "\\coordinate (\\prev) at ("<< x <<","<< y <<");\n";
+  file << "\\coordinate (\\prev) at (0, 0);\n";
   file << "\\foreach \\curr in \\numbers{\n";
   file << "  \\coordinate (\\curr) at ($ (\\prev) + (\\angle:1) $);\n";
   file << "  \\draw (\\prev) node {} -- (\\curr) node {};\n";
