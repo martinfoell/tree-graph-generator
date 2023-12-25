@@ -100,9 +100,9 @@ void Tikz::path(std::string filename, std::vector<int> numbers, double angle, do
   file << "}\n";
 }
 
-void Tikz::centralPath(std::string filename, int V, double angle){
-  std::vector<int> numbers = createVector(0, V-1);
-  std::string filePath = "tex/" + filename + ".tikz";
+void Tikz::centralPath(int V, int V_central, double angle){
+  std::vector<int> numbers = createVector(0, V_central-1);
+  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/central_tree.tikz";
   std::ofstream file(filePath);
   file << "\\def\\prev{"<< numbers[0]<<"}\n";
   file << "\\def\\numbers{";
@@ -123,7 +123,7 @@ void Tikz::centralPath(std::string filename, int V, double angle){
 }
 
 
-void Tikz::appendPath(int V, int L, int curr, int next, int length, int digits, int tree_index, double angle){
+void Tikz::appendPath(int V, int V_central, int L, int curr, int next, int length, int digits, int tree_index, double angle){
   // vector containing the numbers in the path
   size_t digits_size = static_cast<size_t>(digits);
   IntVector numbers = createVector(next, next + length - 1);
@@ -132,7 +132,7 @@ void Tikz::appendPath(int V, int L, int curr, int next, int length, int digits, 
   std::string index_new = std::string(digits_size - std::min(digits_size, index_old.length()), '0') + index_old;
   std::string filename = "tree_"+ index_new;
 
-  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/L" + std::to_string(L) + "/" + filename + ".tikz";
+  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central)+ "/L" + std::to_string(L) + "/" + filename + ".tikz";
   std::ofstream file(filePath, std::ios::app);
   file << "\\def\\prev{"<< curr <<"}\n";
   file << "\\def\\numbers{";
@@ -162,19 +162,26 @@ void Tikz::corePath(std::vector<int> numbers, double angle){
   file << "\\def\\angle{"<< angle <<"}\n";  
 }
 
-void Tikz::makeTrees(int V, int L, int width, int digits, int n_trees) {
+void Tikz::makeTrees(int V, int V_central, int L, int width, int digits, int n_trees) {
   // int digits_int = static_cast<int>(digits);    
   std::cout << "digits" << digits << std::endl;
-  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/L" + std::to_string(L) + "/input_trees.tex";
-  std::cout << filePath << std::endl;
-  std::ofstream File(filePath);
+  std::string texfolderPath = "tex/";
+  std::string tikzfolderPath = "tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/L" + std::to_string(L) + "/";
+  std::string tikzfolderPath2 = "tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/";  
+  std::string texPath = texfolderPath + tikzfolderPath + "input_trees.tex";
+  std::string tikzPath = tikzfolderPath2 + "central_tree.tikz";
+  // std::string filePath = "tex/tikz/V" + std::to_string(V) + "/L" + std::to_string(L) + "/input_trees.tex";
+  std::cout << texfolderPath + tikzfolderPath << std::endl;
+  std::cout << texPath << std::endl;
+  std::cout << tikzPath << std::endl;
+  std::ofstream File(texPath);
   if (File.is_open()) {
     std::ostringstream file;
     file << "\\foreach \\i in {1,...," << n_trees << "}{\n";
     file << "  \\begin{tikzpicture}[scale=0.3,baseline={(0,0)}]\n";
-    file << "    \\input{central_tree.tikz}\n";
+    file << "    \\input{" << tikzPath << "}\n";
     // file << "    \\input{loop.tikz}\n";
-    file << "    \\input{tikz/V" << V << "/L" << L << "/tree_\\padnum{" << digits << "}{\\i}.tikz}\n";
+    file << "    \\input{tikz/V" << V <<  "/V_C" << V_central << "/L" << L << "/tree_\\padnum{" << digits << "}{\\i}.tikz}\n";
     file << "  \\end{tikzpicture}\n";
     file << "  \\checkNumberModulo{\\i}{" << width << "}\n";
     file << "}\n";
@@ -184,10 +191,10 @@ void Tikz::makeTrees(int V, int L, int width, int digits, int n_trees) {
   }
 }
 
-bool Tikz::appendBody(int V, int L){
+bool Tikz::appendBody(int V, int V_central, int L){
   std::ofstream file("tex/body.tex", std::ios::app);
   if (file.is_open()) {
-    file << "\\input{tikz/V" << V << "/L" << L << "/input_trees}\n";        
+    file << "\\input{tikz/V" << V << "/V_C" << V_central << "/L" << L << "/input_trees}\n";        
     file.close();
     return true; // append successful
     } else {
@@ -228,17 +235,28 @@ void Tikz::writeMain() {
     }
 }
 
-void Tikz::createDirectory(int V, int L) {
+void Tikz::createDirectory(int V, int V_central, int L) {
   fs::path currentPath = fs::current_path();
   std::string pathAsString = currentPath.string();
   std::string mainDir = pathAsString + "/tex/tikz";
   std::cout << "Current directory: " << currentPath << std::endl;
-  std::string vertexPath = mainDir + "/V" + std::to_string(V);  
-  std::string leafPath = vertexPath + "/L" + std::to_string(L);
+  std::string vertexPath = mainDir + "/V" + std::to_string(V);
+  std::string centralTreePath = vertexPath + "/V_C" + std::to_string(V_central);
+  std::string leafPath = centralTreePath + "/L" + std::to_string(L);
   // Check if the directory already exists
   if (!fs::exists(vertexPath)) {
     // Create the directory
     if (fs::create_directory(vertexPath)) {
+      std::cout << "Directory created successfully!" << std::endl;
+    } else {
+      std::cout << "Failed to create directory!" << std::endl;
+    }
+  } else {
+    std::cout << "Directory already exists!" << std::endl;
+  }
+  if (!fs::exists(centralTreePath)) {
+    // Create the directory
+    if (fs::create_directory(centralTreePath)) {
       std::cout << "Directory created successfully!" << std::endl;
     } else {
       std::cout << "Failed to create directory!" << std::endl;
@@ -259,12 +277,12 @@ void Tikz::createDirectory(int V, int L) {
 }
 
 
-void Tikz::deleteTrees(int V, int L) {
+void Tikz::deleteTrees(int V, int V_central, int L) {
   fs::path currentPath = fs::current_path();
   std::string pathAsString = currentPath.string();
   std::string mainDir = pathAsString + "/tex/tikz";
   std::cout << "Current directory: " << currentPath << std::endl;
-  std::string directoryPath = mainDir + "/V"+std::to_string(V) + "/L" + std::to_string(L);
+  std::string directoryPath = mainDir + "/V"+std::to_string(V) + "/V_C"+std::to_string(V_central) + "/L" + std::to_string(L);
   try {
     for (const auto& entry : fs::directory_iterator(directoryPath)) {
       if (fs::is_regular_file(entry.path())) {

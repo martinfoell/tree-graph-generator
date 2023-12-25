@@ -25,11 +25,12 @@ int main() {
     // idea: need to prune the tree to remove vertices that have degree 1 and 2
     // perbutative tree generation
     
-    int V = 9; // Number of vertices in the graph
+    int V = 12; // Number of vertices in the graph
     int L = 4; // Number of leaves in the graph
     int V_central = 2; // Number of vertices in the central path/tree
     
-    tikz.centralPath("central_tree", V_central, 0);
+    
+    // tikz.centralPath("central_tree", V_central, 0);
     Tree tree(V); // create main tree
     Tree treeCentral(V); // create central tree
     
@@ -40,9 +41,9 @@ int main() {
     int L_central = leaves_central.size();
     std::cout << "L_central: " << L_central << std::endl;
     
-    tikz.createDirectory(V, L);    
-    tikz.deleteTrees(V, L);
-    
+    tikz.createDirectory(V, V_central, L);    
+    tikz.deleteTrees(V, V_central, L);
+    tikz.centralPath(V, V_central, 0);    
     IntVector3D paths = findAllPaths(V, L, V_central, L_central, 1);
     
     // loop over all different configurations of the leaf paths
@@ -61,7 +62,7 @@ int main() {
 	  int empty_vertex = tree.emptyVertex();
 	  // add the path to the tree
 	  tree.addPath(leaf_central, empty_vertex, path[j]);
-	  tikz.appendPath(V, L, leaf_central, last_vertex,  path[j], digits, k,  angles[j]);
+	  tikz.appendPath(V, V_central, L, leaf_central, last_vertex,  path[j], digits, k,  angles[j]);
 	  last_vertex += path[j];
 	}
       }
@@ -70,11 +71,11 @@ int main() {
       tree = treeCentral;
     }
     // if (Print) {
-      std::cout << "paths: "<< std::endl;
-      displayVec3(paths);
+    std::cout << "paths: "<< std::endl;
+    displayVec3(paths);
     // }
-    tikz.makeTrees(V, L, width, digits, paths.size());    
-    tikz.appendBody(V, L);
+    tikz.makeTrees(V, V_central, L, width, digits, paths.size());    
+    tikz.appendBody(V, V_central, L);
 
     
     tikz.writeMain();
