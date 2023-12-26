@@ -75,7 +75,8 @@ public:
 
   // Clear the edges of the tree
   void clear();
-  
+
+  int generateTrees(Tree tree, int V, int L, int V_central, int width, int digits);  
   //////// Print functions ////////
   
   // Function to display the adjacency list representation of the graph

@@ -1,34 +1,8 @@
 #ifndef layout_hpp
 #define layout_hpp
 
-#include <stdio.h>
-#include <iostream>
 #include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <map>
-#include <set>
-#include <queue>
-#include <stack>
-#include <unordered_map>
-#include <unordered_set>
-#include <cmath>
-#include <iomanip>
-#include <climits>
-#include <numeric>
-#include <functional>
-#include <cassert>
-#include <cctype>
-#include <bitset>
-#include <list>
-#include <deque>
-#include <utility>
-#include <random>
-#include <chrono>
-#include <ctime>
-
+#include <iostream>
 
 
 

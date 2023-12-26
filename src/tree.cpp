@@ -1,4 +1,7 @@
 #include "../include/tree.hpp"
+#include "../include/utils.hpp"
+#include "../include/layout.hpp"
+#include "../include/tikz.hpp"
 
 
 // Constructor definition
@@ -153,6 +156,57 @@ void Tree::clear(){
   for (int i = 0; i < V; i++){
     adjList[i].clear();
   }
+}
+
+int Tree::generateTrees(Tree tree, int V, int L, int V_central, int width, int digits){
+
+  Layout layout;
+    
+  Tikz tikz(V, L, V_central);
+  tikz.createDirectory();    
+  tikz.deleteTrees();
+  tikz.centralPath(0);    
+  
+  Tree treeCentral(V); // create central tree
+  treeCentral.centralPath(V_central);    
+  std::vector<int> leaves_central = treeCentral.leavesCentral(V_central);
+  int L_central = leaves_central.size();
+  
+  tree = treeCentral;        
+  
+  IntVector3D paths = findAllPaths(V, L, V_central, L_central, 1);
+  // loop over all different configurations of the leaf paths
+  for (int k = 0; k < paths.size(); k++){
+    // use instead of empty_vertex if tikz only
+    int last_vertex = V_central;
+    // loop over all the leaves for one configuration
+    for (int i = 0; i < paths[k].size(); i++) {
+      IntVector path = paths[k][i];
+      int leaf_central = leaves_central[i];
+      // loop over each path for one leaf
+      for (int j = 0; j < path.size(); j++) {
+	std::cout << "path: " << path.size() << std::endl;
+	std::vector<double> angles = layout.half(-180, -90, V_central, path.size(), -1+2*i);	  
+	// the first empty node in the tree
+	int empty_vertex = tree.emptyVertex();
+	// add the path to the tree
+	tree.addPath(leaf_central, empty_vertex, path[j]);
+	tikz.appendPath(leaf_central, last_vertex,  path[j], digits, k,  angles[j]);
+	last_vertex += path[j];
+      }
+    }
+    
+    tree.clear();
+    tree = treeCentral;
+  }
+  // if (Print) {
+  std::cout << "paths: "<< std::endl;
+  displayVec3(paths);
+  // }
+  tikz.makeTrees(width, digits, paths.size());    
+  tikz.appendTrees();
+
+  return paths.size();
 }
 //////// Print functions ////////
 

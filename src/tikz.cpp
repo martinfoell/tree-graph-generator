@@ -1,82 +1,11 @@
 #include "../include/tikz.hpp"
 #include "../include/utils.hpp"
 #include <sstream>
-// Constructor definition
-Tikz::Tikz() {}
 
-void Tikz::premable() {
-  std::ofstream file("tex/premable.tex");  
-  if (file.is_open()) {
-    file << R"(\documentclass{article}
-\usepackage[margin=0.5in,marginpar=0.75in]{geometry}
-\usepackage{tikz}
-\usetikzlibrary{calc}
-
-\usepackage{ifthen}
-\usepackage{fmtcount}
-
-
-
-\makeatletter
-\newcommand{\padnum}[2]{%
-  \ifnum#1>1 \ifnum#2<10 0\fi
-  \ifnum#1>2 \ifnum#2<100 0\fi
-  \ifnum#1>3 \ifnum#2<1000 0\fi
-  \ifnum#1>4 \ifnum#2<10000 0\fi
-  \ifnum#1>5 \ifnum#2<100000 0\fi
-  \ifnum#1>6 \ifnum#2<1000000 0\fi
-  \ifnum#1>7 \ifnum#2<10000000 0\fi
-  \ifnum#1>8 \ifnum#2<100000000 0\fi
-  \ifnum#1>9 \ifnum#2<1000000000 0\fi
-  \fi\fi\fi\fi\fi\fi\fi\fi\fi
-  \expandafter\@firstofone\expandafter{\number#2}%
-}
-\makeatother
-
-% Modulo command
-\makeatletter
-\newcommand{\modulo}[2]{%
-  \number\numexpr#1-#2*(\number\numexpr(#1/#2)\relax)\relax
-}
-\makeatother
-
-\newcommand{\checkNumberModulo}[2]{%
-  \ifnum\modulo{#1}{#2}=0
-    \par\vspace{1cm} % If number is multiple of the specified modulo
-  \else
-    \hspace{1cm} % If number is not a multiple
-  \fi
-}
-)";
-    file.close();
-    }
-}
-
-
-void Tikz::tikzset(){
-  std::ofstream file("tex/tikzset.tex");
-  if (file.is_open()) {
-    file << "\\tikzset{\n";
-    file << "    every node/.style={\n";
-    file << "        circle,\n";
-    file << "        draw,\n";
-    file << "        solid,\n";
-    file << "        fill=black,\n";
-    file << "        inner sep=0pt,\n";
-    file << "        minimum width=4pt\n";
-    file << "    }\n";
-    file << "}\n";
-    file.close();
-  }
-}
-
-void Tikz::loop(){
-  std::ofstream file("tex/loop.tikz");
-  file << "\\foreach \\curr in \\numbers{\n";
-  file << "  \\coordinate (\\curr) at ($ (\\prev) + (\\angle:1) $);\n";
-  file << "  \\draw (\\prev) node {} -- (\\curr) node {};\n";
-  file << "  \\xdef\\prev{\\curr} % Update the previous element to the current element\n";
-  file << "}\n";
+Tikz::Tikz(int V, int L, int V_central) {
+  V_ = V;
+  L_ = L;
+  V_central_ = V_central;
 }
 
 void Tikz::path(std::string filename, std::vector<int> numbers, double angle, double x, double y){
@@ -100,9 +29,9 @@ void Tikz::path(std::string filename, std::vector<int> numbers, double angle, do
   file << "}\n";
 }
 
-void Tikz::centralPath(int V, int V_central, double angle){
-  std::vector<int> numbers = createVector(0, V_central-1);
-  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/central_tree.tikz";
+void Tikz::centralPath(double angle){
+  std::vector<int> numbers = createVector(0, V_central_ - 1);
+  std::string filePath = "tex/tikz/V" + std::to_string(V_) + "/V_C" + std::to_string(V_central_) + "/central_tree.tikz";
   std::ofstream file(filePath);
   file << "\\def\\prev{"<< numbers[0]<<"}\n";
   file << "\\def\\numbers{";
@@ -123,7 +52,7 @@ void Tikz::centralPath(int V, int V_central, double angle){
 }
 
 
-void Tikz::appendPath(int V, int V_central, int L, int curr, int next, int length, int digits, int tree_index, double angle){
+void Tikz::appendPath(int curr, int next, int length, int digits, int tree_index, double angle){
   // vector containing the numbers in the path
   size_t digits_size = static_cast<size_t>(digits);
   IntVector numbers = createVector(next, next + length - 1);
@@ -132,7 +61,7 @@ void Tikz::appendPath(int V, int V_central, int L, int curr, int next, int lengt
   std::string index_new = std::string(digits_size - std::min(digits_size, index_old.length()), '0') + index_old;
   std::string filename = "tree_"+ index_new;
 
-  std::string filePath = "tex/tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central)+ "/L" + std::to_string(L) + "/" + filename + ".tikz";
+  std::string filePath = "tex/tikz/V" + std::to_string(V_) + "/V_C" + std::to_string(V_central_)+ "/L" + std::to_string(L_) + "/" + filename + ".tikz";
   std::ofstream file(filePath, std::ios::app);
   file << "\\def\\prev{"<< curr <<"}\n";
   file << "\\def\\numbers{";
@@ -149,25 +78,13 @@ void Tikz::appendPath(int V, int V_central, int L, int curr, int next, int lengt
   file.close();
 }
 
-void Tikz::corePath(std::vector<int> numbers, double angle){
-  std::ofstream file("tex/tikzCorepath.tikz");
-  file << "\\def\\numbers{";
-  for (size_t i = 1; i < numbers.size(); ++i) {
-    file << numbers[i];
-    if (i != numbers.size() - 1) {
-      file << ",";
-    }
-  }
-  file << "}\n";
-  file << "\\def\\angle{"<< angle <<"}\n";  
-}
 
-void Tikz::makeTrees(int V, int V_central, int L, int width, int digits, int n_trees) {
+void Tikz::makeTrees(int width, int digits, int n_trees) {
   // int digits_int = static_cast<int>(digits);    
   std::cout << "digits" << digits << std::endl;
   std::string texfolderPath = "tex/";
-  std::string tikzfolderPath = "tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/L" + std::to_string(L) + "/";
-  std::string tikzfolderPath2 = "tikz/V" + std::to_string(V) + "/V_C" + std::to_string(V_central) + "/";  
+  std::string tikzfolderPath = "tikz/V" + std::to_string(V_) + "/V_C" + std::to_string(V_central_) + "/L" + std::to_string(L_) + "/";
+  std::string tikzfolderPath2 = "tikz/V" + std::to_string(V_) + "/V_C" + std::to_string(V_central_) + "/";  
   std::string texPath = texfolderPath + tikzfolderPath + "input_trees.tex";
   std::string tikzPath = tikzfolderPath2 + "central_tree.tikz";
   // std::string filePath = "tex/tikz/V" + std::to_string(V) + "/L" + std::to_string(L) + "/input_trees.tex";
@@ -180,8 +97,7 @@ void Tikz::makeTrees(int V, int V_central, int L, int width, int digits, int n_t
     file << "\\foreach \\i in {1,...," << n_trees << "}{\n";
     file << "  \\begin{tikzpicture}[scale=0.3,baseline={(0,0)}]\n";
     file << "    \\input{" << tikzPath << "}\n";
-    // file << "    \\input{loop.tikz}\n";
-    file << "    \\input{tikz/V" << V <<  "/V_C" << V_central << "/L" << L << "/tree_\\padnum{" << digits << "}{\\i}.tikz}\n";
+    file << "    \\input{tikz/V" << V_ <<  "/V_C" << V_central_ << "/L" << L_ << "/tree_\\padnum{" << digits << "}{\\i}.tikz}\n";
     file << "  \\end{tikzpicture}\n";
     file << "  \\checkNumberModulo{\\i}{" << width << "}\n";
     file << "}\n";
@@ -191,10 +107,10 @@ void Tikz::makeTrees(int V, int V_central, int L, int width, int digits, int n_t
   }
 }
 
-bool Tikz::appendBody(int V, int V_central, int L){
+bool Tikz::appendTrees(){
   std::ofstream file("tex/body.tex", std::ios::app);
   if (file.is_open()) {
-    file << "\\input{tikz/V" << V << "/V_C" << V_central << "/L" << L << "/input_trees}\n";        
+    file << "\\input{tikz/V" << V_ << "/V_C" << V_central_ << "/L" << L_ << "/input_trees}\n";        
     file.close();
     return true; // append successful
     } else {
@@ -204,45 +120,15 @@ bool Tikz::appendBody(int V, int V_central, int L){
 }
 
 
-void Tikz::deleteBody(){
-  fs::path currentPath = fs::current_path();
-  std::string pathAsString = currentPath.string();
-  std::string deletefile = pathAsString + "/tex/body.tex";
-  try {
-    if (std::filesystem::remove(deletefile))
-       std::cout << "file " << deletefile << " deleted.\n";
-    else
-       std::cout << "file " << deletefile << " not found.\n";
-  }
-  catch(const std::filesystem::filesystem_error& err) {
-     std::cout << "filesystem error: " << err.what() << '\n';
-  }
-}
 
-void Tikz::writeMain() {
-    std::ofstream file("main.tex");
-
-    if (file.is_open()) {
-        file << "\\input{preamble}\n";
-        file << "\\begin{document}\n";
-        file << "\\input{tikzset}\n";
-        file << "\\input{body}\n";
-        file << "\\end{document}\n";
-
-        file.close();
-    } else {
-        std::cout << "Unable to open file for writing.\n";
-    }
-}
-
-void Tikz::createDirectory(int V, int V_central, int L) {
+void Tikz::createDirectory() {
   fs::path currentPath = fs::current_path();
   std::string pathAsString = currentPath.string();
   std::string mainDir = pathAsString + "/tex/tikz";
   std::cout << "Current directory: " << currentPath << std::endl;
-  std::string vertexPath = mainDir + "/V" + std::to_string(V);
-  std::string centralTreePath = vertexPath + "/V_C" + std::to_string(V_central);
-  std::string leafPath = centralTreePath + "/L" + std::to_string(L);
+  std::string vertexPath = mainDir + "/V" + std::to_string(V_);
+  std::string centralTreePath = vertexPath + "/V_C" + std::to_string(V_central_);
+  std::string leafPath = centralTreePath + "/L" + std::to_string(L_);
   // Check if the directory already exists
   if (!fs::exists(vertexPath)) {
     // Create the directory
@@ -277,12 +163,12 @@ void Tikz::createDirectory(int V, int V_central, int L) {
 }
 
 
-void Tikz::deleteTrees(int V, int V_central, int L) {
+void Tikz::deleteTrees() {
   fs::path currentPath = fs::current_path();
   std::string pathAsString = currentPath.string();
   std::string mainDir = pathAsString + "/tex/tikz";
   std::cout << "Current directory: " << currentPath << std::endl;
-  std::string directoryPath = mainDir + "/V"+std::to_string(V) + "/V_C"+std::to_string(V_central) + "/L" + std::to_string(L);
+  std::string directoryPath = mainDir + "/V"+std::to_string(V_) + "/V_C"+std::to_string(V_central_) + "/L" + std::to_string(L_);
   try {
     for (const auto& entry : fs::directory_iterator(directoryPath)) {
       if (fs::is_regular_file(entry.path())) {
@@ -293,5 +179,5 @@ void Tikz::deleteTrees(int V, int V_central, int L) {
   } catch (const fs::filesystem_error& e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
-  std::cout << "Deleted all files in " << "/tex/tikz/V"+std::to_string(V) + "/L" + std::to_string(L) << std::endl;
+  std::cout << "Deleted all files in " << "/tex/tikz/V"+std::to_string(V_) + "/V_C" + std::to_string(V_central_) +"/L" + std::to_string(L_) << std::endl;
 }

@@ -7,11 +7,11 @@ partitions:
 	./bin/partitions
 
 main:
-	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2 
+	g++ ./test/main.cpp ./src/tree.cpp ./src/tex.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2 
 	./bin/main2
 
 pdf-main:
-	g++ ./test/main.cpp ./src/tree.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2
+	g++ ./test/main.cpp ./src/tree.cpp ./src/tex.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2
 	./bin/main2
 	cd tex/ && \
 	pdflatex main.tex && \
