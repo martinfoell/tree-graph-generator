@@ -30,7 +30,7 @@ int main() {
     // perbutative tree generation
     
     int V = 13; // Number of vertices in the graph
-    int L = 4; // Number of leaves in the graph
+
     int V_central = 2; // Number of vertices in the central path/tree
     Tree tree(V); // create main tree
 
@@ -48,12 +48,34 @@ int main() {
       n += m;
     }
     std::cout << "Number of trees: " << n << std::endl;
+    tex.writeMain();
+
+    int L = 10; // Number of leaves in the graph
+    int C_L = 5; // Number of leaves in the central path/tree
+
+    IntVector2D part = partition(L, C_L);
+    std::cout << "Partition: " << std::endl;
+    printVector2D(part);
+
+    IntVector3D all_permutations;
+    for (int i = 0; i < part.size(); i++) {
+      IntVector2D perm = permutations(part[i]);
+      all_permutations.push_back(perm);
+    }
+
+    printVector3D(all_permutations);
+    IntVector2D all_permutations_2d = flattenVec3ToVec2(all_permutations);
+    std::cout << "Permutations: " << std::endl;
+    // printVector2D(all_permutations_2d);
+    std::cout << "Number of permutations: " << all_permutations_2d.size() << std::endl;
+
+    std::vector<double> test = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+    printVector(test);
 
     
-    
-    tex.writeMain();
-    
     return 0;
+
+
 }
 
 

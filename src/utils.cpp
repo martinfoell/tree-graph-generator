@@ -7,19 +7,20 @@ std::vector<int> createVector(int begin, int end){
   return vec;
 }
 
-void printVector(std::vector<int> vec){
-  for (auto i : vec)
-    std::cout << i << " ";
-  std::cout << std::endl;
+
+template<typename T>
+void printVector(const T& t) {
+    for (const auto& elem : t) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
 }
 
-void printVectord(std::vector<double> vec){
-  for (auto i : vec)
-    std::cout << i << " ";
-  std::cout << std::endl;
-}
+template void printVector(const std::vector<int>& t);
+template void printVector(const std::vector<double>& t);
 
-void print2DVector(const std::vector<std::vector<int>>& vec) {
+template<typename T>
+void printVector2D(const T& vec) {
     for (const auto& row : vec) {
         for (int element : row) {
             std::cout << element << " ";
@@ -27,6 +28,45 @@ void print2DVector(const std::vector<std::vector<int>>& vec) {
         std::cout << std::endl;
     }
 }
+
+template void printVector2D(const std::vector<std::vector<int>>& t);
+template void printVector2D(const std::vector<std::vector<double>>& t);
+
+template<typename T>
+void printVector3D(const T& vec3) {
+    for (const auto& vec2 : vec3) {
+        for (const auto& vec1 : vec2) {
+            for (int num : vec1) {
+                std::cout << num << " ";
+            }
+            std::cout << "| ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+template void printVector3D(const std::vector<std::vector<std::vector<int>>>& t);
+template void printVector3D(const std::vector<std::vector<std::vector<double>>>& t);
+
+template<typename T>
+void printVector4D(const T& vec4) {
+    for (const auto& vec3 : vec4) {
+        for (const auto& vec2 : vec3) {
+            for (const auto& vec1 : vec2) {
+                for (const auto& num : vec1) {
+                    std::cout << num << " ";
+                }
+                std::cout << "| ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "--------" << std::endl; // Separate each 3D slice
+    }
+}
+
+template void printVector4D(const std::vector<std::vector<std::vector<std::vector<int>>>>& t);
+template void printVector4D(const std::vector<std::vector<std::vector<std::vector<double>>>>& t);
+
 
 std::vector<int> slicing(std::vector<int>& arr, int X, int Y) {
     // Starting and Ending iterators
@@ -86,32 +126,7 @@ void sortVec3_lexi(IntVector3D& vec3) {
 
     vec3.erase(std::unique(vec3.begin(), vec3.end()), vec3.end());
 }
-void displayVec3(const IntVector3D& vec3) {
-    for (const auto& vec2 : vec3) {
-        for (const auto& vec1 : vec2) {
-            for (int num : vec1) {
-                std::cout << num << " ";
-            }
-            std::cout << "| ";
-        }
-        std::cout << std::endl;
-    }
-}
 
-void displayVec4(const IntVector4D& vec4) {
-    for (const auto& vec3 : vec4) {
-        for (const auto& vec2 : vec3) {
-            for (const auto& vec1 : vec2) {
-                for (const auto& num : vec1) {
-                    std::cout << num << " ";
-                }
-                std::cout << "| ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << "--------" << std::endl; // Separate each 3D slice
-    }
-}
 
 IntVector2D flattenVec3ToVec2(const IntVector3D& vec3) {
   IntVector2D flattenedVec2;
@@ -167,8 +182,6 @@ void part(int n, std::vector<int>& v, int level, int r, std::vector<std::vector<
       first = v[level - 1];
     }
 
-    // first = (level == 0) ? 1 : v[level - 1];
-
     for (int i = first; i <= n / 2; i++) {
         v[level] = i; /* replace last */
         part(n - i, v, level + 1, r, result);
@@ -204,19 +217,19 @@ IntVector2D filterVectors(const IntVector2D& vecOfVecs, int threshold) {
   return filteredVecs;
 }
 
-IntVector2D pathConfig(int paths, int nleaves, int n_ones){
-  return filterVectors(partition(paths, nleaves),n_ones);
-}
+// IntVector2D pathConfig(int paths, int nleaves, int n_ones){
+//   return filterVectors(partition(paths, nleaves),n_ones);
+// }
 
-IntVector2D pathConfigSplits(int paths, int nleaves, int n_ones){
-  IntVector2D paths_config_splits;
-  IntVector2D paths_config = pathConfig(paths, nleaves, n_ones);
-  for (int i = 0; i < paths_config.size(); i++){
-    std::vector<int> paths_split = cumulative(paths_config[i]);			
-    paths_config_splits.push_back(paths_split);
-  }
-  return paths_config_splits;
-}
+// IntVector2D pathConfigSplits(int paths, int nleaves, int n_ones){
+//   IntVector2D paths_config_splits;
+//   IntVector2D paths_config = pathConfig(paths, nleaves, n_ones);
+//   for (int i = 0; i < paths_config.size(); i++){
+//     std::vector<int> paths_split = cumulative(paths_config[i]);			
+//     paths_config_splits.push_back(paths_split);
+//   }
+//   return paths_config_splits;
+// }
 
 
 // Function to generate all path configurarions on n leaves of the total number of nodes on the paths

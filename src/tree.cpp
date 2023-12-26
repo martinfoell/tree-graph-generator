@@ -136,17 +136,6 @@ void Tree::addPath(int curr, int next, int length){
   }
 }
 
-void Tree::addPaths(std::vector<int> vertices, std::vector<int> partion){
-  // size of partition
-  int n = partion.size();
-  for (int i = 0; i < n; i++){
-    // highest vertex that is empty
-    int next = emptyVertex();
-    // add branch to vertex
-    addPath(vertices[i], next, partion[i]);
-    next+=partion[i];
-  }
-}
 
 void Tree::centralPath(int length){
   addPath(0, emptyVertex(), length-1);
@@ -185,7 +174,6 @@ int Tree::generateTrees(Tree tree, int V, int L, int V_central, int width, int d
       int leaf_central = leaves_central[i];
       // loop over each path for one leaf
       for (int j = 0; j < path.size(); j++) {
-	std::cout << "path: " << path.size() << std::endl;
 	std::vector<double> angles = layout.half(-180, -90, V_central, path.size(), -1+2*i);	  
 	// the first empty node in the tree
 	int empty_vertex = tree.emptyVertex();
@@ -201,7 +189,7 @@ int Tree::generateTrees(Tree tree, int V, int L, int V_central, int width, int d
   }
   // if (Print) {
   std::cout << "paths: "<< std::endl;
-  displayVec3(paths);
+  printVector3D(paths);
   // }
   tikz.makeTrees(width, digits, paths.size());    
   tikz.appendTrees();

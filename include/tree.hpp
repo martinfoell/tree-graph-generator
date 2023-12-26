@@ -67,9 +67,6 @@ public:
   // Function to add a path from a curent nude to the next and so on with length l
   void addPath(int curr, int next, int length);
 
-  // Function to add a path from a set of nodes into a set of partitions
-  void addPaths(std::vector<int> vertices, std::vector<int> partion);
-
   // Function to add the core path from vertex 0 to l-1
   void centralPath(int length);
 

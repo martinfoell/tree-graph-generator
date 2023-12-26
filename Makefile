@@ -21,3 +21,14 @@ delete:
 	g++ -std=c++17 ./cpp_test/delete2.cpp  -o ./bin/delete2 
 	./bin/delete2
 
+printvector:
+	g++ -std=c++17 ./test/printvector.cpp  -o ./bin/printvector 
+	./bin/printvector
+
+pp:
+	g++ -std=c++17 ./test/pp.cpp  -o ./bin/pp 
+	./bin/pp
+
+filtervector:
+	g++ -std=c++17 ./test/filtervector.cpp  -o ./bin/filtervector 
+	./bin/filtervector
