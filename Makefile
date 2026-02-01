@@ -1,34 +1,36 @@
+.PHONY: adjlist partitions main pdf-main delete printvector pp filtervector clean
+
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra
+BIN = bin
+
 adjlist:
-	g++ ./test/adjlist.cpp -o ./bin/adjlist  -std=c++11
-	./bin/adjlist 
+	$(CXX) $(CXXFLAGS) ./test/adjlist.cpp -o $(BIN)/adjlist
+	./$(BIN)/adjlist
 
 partitions:
-	g++ ./test/partitions.cpp -o ./bin/partitions  
-	./bin/partitions
+	$(CXX) $(CXXFLAGS) ./test/partitions.cpp ./src/utils.cpp -o $(BIN)/partitions
+	./$(BIN)/partitions
 
 main:
-	g++ ./test/main.cpp ./src/tree.cpp ./src/tex.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2 
-	./bin/main2
+	mkdir -p $(BIN)
+	$(CXX) $(CXXFLAGS) ./test/main.cpp ./src/tree.cpp ./src/tex.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o $(BIN)/main2
+	./$(BIN)/main2
 
-pdf-main:
-	g++ ./test/main.cpp ./src/tree.cpp ./src/tex.cpp ./src/tikz.cpp ./src/utils.cpp ./src/layout.cpp -o ./bin/main2
-	./bin/main2
-	cd tex/ && \
-	pdflatex main.tex && \
-	evince main.pdf
-
-delete:
-	g++ -std=c++17 ./cpp_test/delete2.cpp  -o ./bin/delete2 
-	./bin/delete2
+pdf-main: main
+	cd tex && pdflatex main.tex && EVINCE_DEBUG=0 evince main.pdf
 
 printvector:
-	g++ -std=c++17 ./test/printvector.cpp  -o ./bin/printvector 
-	./bin/printvector
+	$(CXX) $(CXXFLAGS) ./test/printvector.cpp ./src/utils.cpp -o $(BIN)/printvector
+	./$(BIN)/printvector
 
 pp:
-	g++ -std=c++17 ./test/pp.cpp  -o ./bin/pp 
-	./bin/pp
+	$(CXX) $(CXXFLAGS) ./test/pp.cpp ./src/utils.cpp -o $(BIN)/pp
+	./$(BIN)/pp
 
 filtervector:
-	g++ -std=c++17 ./test/filtervector.cpp  -o ./bin/filtervector 
-	./bin/filtervector
+	$(CXX) $(CXXFLAGS) ./test/filtervector.cpp ./src/utils.cpp -o $(BIN)/filtervector
+	./$(BIN)/filtervector
+
+clean:
+	rm -rf $(BIN)/*

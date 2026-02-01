@@ -29,50 +29,52 @@ int main() {
     // idea: need to prune the tree to remove vertices that have degree 1 and 2
     // perbutative tree generation
     
-    int V = 13; // Number of vertices in the graph
+    int V = 9; // Number of vertices in the graph
+    for (int V = 8; V < 12; V++) {
+      Tree tree(V); // create main tree      
+      // int V_central = 3; // Number of vertices in the central path/tree
 
-    int V_central = 2; // Number of vertices in the central path/tree
-    Tree tree(V); // create main tree
-
-    int L_min;
-    if ( V_central == 0 ) {
-      L_min = 3;
-    } else {
-      L_min = 4;
-    }
-    int L_max = V - V_central + 1;
-
-    int n = 0;
-    for (int i = L_min; i < L_max; i++) {
-      int m = tree.generateTrees(tree, V, i, V_central, width, digits);
-      n += m;
-    }
-    std::cout << "Number of trees: " << n << std::endl;
-    tex.writeMain();
-
-    int L = 10; // Number of leaves in the graph
-    int C_L = 5; // Number of leaves in the central path/tree
-
-    IntVector2D part = partition(L, C_L);
-    std::cout << "Partition: " << std::endl;
-    printVector2D(part);
-
-    IntVector3D all_permutations;
-    for (int i = 0; i < part.size(); i++) {
-      IntVector2D perm = permutations(part[i]);
-      all_permutations.push_back(perm);
-    }
-
-    printVector3D(all_permutations);
-    IntVector2D all_permutations_2d = flattenVec3ToVec2(all_permutations);
-    std::cout << "Permutations: " << std::endl;
-    // printVector2D(all_permutations_2d);
-    std::cout << "Number of permutations: " << all_permutations_2d.size() << std::endl;
-
-    std::vector<double> test = {1,2,3,4,5,6,7,8,9,10,11,12,13};
-    printVector(test);
-
+      int V_central_min = 1; // Number of vertices in the central path/tree
+      int V_central_max = std::max(1, V - 4); // Number of vertices in the central path/tree    
+      IntVector3D decomp;
+      IntVector decompSum;
+      decomp.resize(V_central_max - V_central_min + 1);
+      decompSum.resize(V_central_max - V_central_min + 1);      
     
+      int n = 0;
+      for (int V_central = V_central_min; V_central <= V_central_max; V_central++) {
+
+	int v = 0;
+	int L_min;    
+	if (V_central <= 1) {
+	  L_min = 3;  // allow small central paths or no central path
+	} else {
+	  L_min = 4;
+	}    
+
+	IntVector2D L_vector;
+      
+	int L_max = V - V_central + 1;
+	for (int i = L_min; i < L_max; i++) {
+	  int m = tree.generateTrees2(V, i, V_central, width, digits);
+	  // int m = tree.generateTrees(tree, V, i, V_central, width, digits);
+	  n += m;
+	  v += m;
+	  L_vector.push_back({m});      
+	}
+	// Reverse L_vector before appending
+	std::reverse(L_vector.begin(), L_vector.end());
+      
+	decomp[V_central - V_central_min] = L_vector;
+	decompSum[V_central - V_central_min] = v;	
+      }
+      std::reverse(decomp.begin(), decomp.end());
+      std::reverse(decompSum.begin(), decompSum.end());      
+      // printVector3D(decomp);
+      printVector(decompSum);      
+      std::cout << "Number of trees: " << n << std::endl;
+      tex.writeMain();
+    }
     return 0;
 
 

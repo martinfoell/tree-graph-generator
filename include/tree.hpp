@@ -30,7 +30,9 @@
 #include <ctime>
 
 
-
+using IntVector = std::vector<int>;
+using IntVector2D = std::vector<IntVector>;
+using IntVector3D = std::vector<IntVector2D>;
 
 class Tree {
 private:
@@ -73,6 +75,13 @@ public:
   // Clear the edges of the tree
   void clear();
 
+  // New function: wrapper that generates paths and TikZ
+  int generateTrees2(int V, int L, int V_central, int width, int digits);
+
+  // Functions used internally
+  IntVector3D generatePaths(int V, int L, int V_central);
+  void makeTikzFromPaths(int V, int L, int V_central, const IntVector3D& paths, int width, int digits);  
+  
   int generateTrees(Tree tree, int V, int L, int V_central, int width, int digits);  
   //////// Print functions ////////
   

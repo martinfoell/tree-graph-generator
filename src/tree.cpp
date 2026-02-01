@@ -147,6 +147,70 @@ void Tree::clear(){
   }
 }
 
+// Returns all tree paths configurations for a given V, L, and central path
+IntVector3D Tree::generatePaths(int V, int L, int V_central) {
+    Tree treeCentral(V);         // central backbone tree
+    treeCentral.centralPath(V_central);
+
+    std::vector<int> leaves_central = treeCentral.leavesCentral(V_central);
+    int L_central = leaves_central.size();
+
+    // Generate all leaf path configurations
+    IntVector3D paths = findAllPaths(V, L, V_central, L_central, 1);
+
+    // Optional: print for debugging
+    // std::cout << "Generated " << paths.size() << " path configurations:\n";
+    // printVector3D(paths);
+
+    return paths;
+}
+// 
+void Tree::makeTikzFromPaths(
+    int V, int L, int V_central,
+    const IntVector3D& paths,
+    int width, int digits)
+{
+    Layout layout;
+    Tikz tikz(V, L, V_central);
+
+    tikz.createDirectory();
+    tikz.deleteTrees();
+    tikz.centralPath(0);
+
+    Tree treeCentral(V);
+    treeCentral.centralPath(V_central);
+    std::vector<int> leaves_central = treeCentral.leavesCentral(V_central);
+
+    for (size_t k = 0; k < paths.size(); ++k) {
+        Tree tree = treeCentral;  // start with central path
+        int last_vertex = V_central;
+
+        for (size_t i = 0; i < paths[k].size(); ++i) {
+            const IntVector& path = paths[k][i];
+            int leaf_central = leaves_central[i];
+
+            for (size_t j = 0; j < path.size(); ++j) {
+                std::vector<double> angles = layout.half(-180, -90, V_central, path.size(), -1 + 2 * i);
+                int empty_vertex = tree.emptyVertex();
+
+                tree.addPath(leaf_central, empty_vertex, path[j]);
+                tikz.appendPath(leaf_central, last_vertex, path[j], digits, k, angles[j]);
+                last_vertex += path[j];
+            }
+        }
+    }
+
+    tikz.makeTrees(width, digits, paths.size());
+    tikz.appendTrees();
+}
+
+
+int Tree::generateTrees2(int V, int L, int V_central, int width, int digits) {
+  IntVector3D paths = Tree::generatePaths(V, L, V_central);
+  // Tree::makeTikzFromPaths(V, L, V_central, paths, width, digits);
+  return paths.size();
+}
+
 int Tree::generateTrees(Tree tree, int V, int L, int V_central, int width, int digits){
 
   Layout layout;

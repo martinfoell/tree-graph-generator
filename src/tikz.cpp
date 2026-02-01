@@ -122,45 +122,65 @@ bool Tikz::appendTrees(){
 
 
 void Tikz::createDirectory() {
-  fs::path currentPath = fs::current_path();
-  std::string pathAsString = currentPath.string();
-  std::string mainDir = pathAsString + "/tex/tikz";
-  std::cout << "Current directory: " << currentPath << std::endl;
-  std::string vertexPath = mainDir + "/V" + std::to_string(V_);
-  std::string centralTreePath = vertexPath + "/V_C" + std::to_string(V_central_);
-  std::string leafPath = centralTreePath + "/L" + std::to_string(L_);
-  // Check if the directory already exists
-  if (!fs::exists(vertexPath)) {
-    // Create the directory
-    if (fs::create_directory(vertexPath)) {
-      std::cout << "Directory created successfully!" << std::endl;
+    fs::path base = fs::current_path() / "tex" / "tikz";
+    fs::path leafPath =
+        base /
+        ("V" + std::to_string(V_)) /
+        ("V_C" + std::to_string(V_central_)) /
+        ("L" + std::to_string(L_));
+
+    std::error_code ec;
+    fs::create_directories(leafPath, ec);
+
+    if (ec) {
+        std::cerr << "Failed to create directories: "
+                  << leafPath << "\n"
+                  << ec.message() << std::endl;
     } else {
-      std::cout << "Failed to create directory!" << std::endl;
+        std::cout << "Directory ready: " << leafPath << std::endl;
     }
-  } else {
-    std::cout << "Directory already exists!" << std::endl;
-  }
-  if (!fs::exists(centralTreePath)) {
-    // Create the directory
-    if (fs::create_directory(centralTreePath)) {
-      std::cout << "Directory created successfully!" << std::endl;
-    } else {
-      std::cout << "Failed to create directory!" << std::endl;
-    }
-  } else {
-    std::cout << "Directory already exists!" << std::endl;
-  }
-  if (!fs::exists(leafPath)) {
-    // Create the directory
-    if (fs::create_directory(leafPath)) {
-      std::cout << "Directory created successfully!" << std::endl;
-    } else {
-      std::cout << "Failed to create directory!" << std::endl;
-    }
-  } else {
-    std::cout << "Directory already exists!" << std::endl;
-  }
 }
+
+// void Tikz::createDirectory() {
+//   fs::path currentPath = fs::current_path();
+//   std::string pathAsString = currentPath.string();
+//   std::string mainDir = pathAsString + "/tex/tikz";
+//   std::cout << "Current directory: " << currentPath << std::endl;
+//   std::string vertexPath = mainDir + "/V" + std::to_string(V_);
+//   std::string centralTreePath = vertexPath + "/V_C" + std::to_string(V_central_);
+//   std::string leafPath = centralTreePath + "/L" + std::to_string(L_);
+//   // Check if the directory already exists
+//   if (!fs::exists(vertexPath)) {
+//     // Create the directory
+//     if (fs::create_directory(vertexPath)) {
+//       std::cout << "Directory created successfully!" << std::endl;
+//     } else {
+//       std::cout << "Failed to create directory!" << std::endl;
+//     }
+//   } else {
+//     std::cout << "Directory already exists!" << std::endl;
+//   }
+//   if (!fs::exists(centralTreePath)) {
+//     // Create the directory
+//     if (fs::create_directory(centralTreePath)) {
+//       std::cout << "Directory created successfully!" << std::endl;
+//     } else {
+//       std::cout << "Failed to create directory!" << std::endl;
+//     }
+//   } else {
+//     std::cout << "Directory already exists!" << std::endl;
+//   }
+//   if (!fs::exists(leafPath)) {
+//     // Create the directory
+//     if (fs::create_directory(leafPath)) {
+//       std::cout << "Directory created successfully!" << std::endl;
+//     } else {
+//       std::cout << "Failed to create directory!" << std::endl;
+//     }
+//   } else {
+//     std::cout << "Directory already exists!" << std::endl;
+//   }
+// }
 
 
 void Tikz::deleteTrees() {

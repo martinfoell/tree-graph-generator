@@ -3,7 +3,12 @@
 Tex::Tex() {}
 
 void Tex::premable() {
-  std::ofstream file("tex/premable.tex");  
+    fs::path texDir = fs::current_path() / "tex";
+    fs::create_directories(texDir);
+
+    fs::path filePath = texDir / "preamble.tex";
+    std::ofstream file(filePath);  
+  // std::ofstream file("tex/premable.tex");  
   if (file.is_open()) {
     file << R"(\documentclass{article}
 \usepackage[margin=0.5in,marginpar=0.75in]{geometry}
@@ -80,23 +85,42 @@ void Tex::tikzloop(){
   file << "}\n";
 }
 
-void Tex::deleteBody(){
-  fs::path currentPath = fs::current_path();
-  std::string pathAsString = currentPath.string();
-  std::string deletefile = pathAsString + "/tex/body.tex";
-  try {
-    if (std::filesystem::remove(deletefile))
-       std::cout << "file " << deletefile << " deleted.\n";
-    else
-       std::cout << "file " << deletefile << " not found.\n";
-  }
-  catch(const std::filesystem::filesystem_error& err) {
-     std::cout << "filesystem error: " << err.what() << '\n';
-  }
+void Tex::deleteBody() {
+    fs::path file = fs::current_path() / "tex" / "body.tex";
+
+    if (!fs::exists(file.parent_path())) {
+        // tex/ doesn't exist → nothing to delete
+        return;
+    }
+
+    std::error_code ec;
+    fs::remove(file, ec);
+
+    if (ec) {
+        std::cerr << "Could not delete " << file << ": " << ec.message() << '\n';
+    } else {
+        std::cout << "Deleted body.tex (if it existed)\n";
+    }
 }
 
+// void Tex::deleteBody(){
+//   fs::path currentPath = fs::current_path();
+//   std::string pathAsString = currentPath.string();
+//   std::string deletefile = pathAsString + "/tex/body.tex";
+//   try {
+//     if (std::filesystem::remove(deletefile))
+//        std::cout << "file " << deletefile << " deleted.\n";
+//     else
+//        std::cout << "file " << deletefile << " not found.\n";
+//   }
+//   catch(const std::filesystem::filesystem_error& err) {
+//      std::cout << "filesystem error: " << err.what() << '\n';
+//   }
+// }
+
  void Tex::writeMain(){
-    std::ofstream file("main.tex");
+   std::ofstream file(fs::current_path() / "tex" / "main.tex");
+   // std::ofstream file("main.tex");
 
     if (file.is_open()) {
         file << "\\input{preamble}\n";

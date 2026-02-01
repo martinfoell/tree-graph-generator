@@ -1,4 +1,4 @@
-#include "../include/utils.hpp"
+#include "../include/utils.hpp"	// 
 
 std::vector<int> createVector(int begin, int end){
   std::vector<int> vec(end-begin+1);
@@ -39,7 +39,7 @@ void printVector3D(const T& vec3) {
             for (int num : vec1) {
                 std::cout << num << " ";
             }
-            std::cout << "| ";
+            std::cout << ", ";
         }
         std::cout << std::endl;
     }
@@ -277,6 +277,7 @@ IntVector3D leafPaths(int n_paths, int n_leaves, int total_path_nodes, int n_one
     sortVec3(leaf_paths);
     return leaf_paths;
 }
+
 
 // Function to generate all path configurarions on n leaves of the total number of nodes on the paths
 IntVector3D findAllPaths(int V, int L, int V_central, int L_central, int n_ones){
